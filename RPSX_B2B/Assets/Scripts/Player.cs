@@ -20,6 +20,9 @@ public class Player : MonoBehaviour {
 	Animator anim;
 	public float runStopFrames;
 	public bool touchingGround;
+	public int directionMod; 
+	bool crouching; 
+	bool canAttack;
 
 	//JumpStuff
 	Transform footOrigin;
@@ -41,6 +44,7 @@ public class Player : MonoBehaviour {
 	void Start () 
 	{
 		actionable = true;
+		canAttack = true;
 		GetReferences ();
 	}
 	
@@ -62,6 +66,10 @@ public class Player : MonoBehaviour {
 //			AfterImageEffect ();
 //		}
 		LeapStop ();
+		if (canAttack) 
+		{
+			AttackControls ();
+		}
 	}
 
 	void GetReferences()
@@ -176,6 +184,18 @@ public class Player : MonoBehaviour {
 		}
 	}
 
+	//Attack Controls
+	void AttackControls()
+	{
+		if (Input.GetButtonDown ("XButton_P" + playerNum)) 
+		{
+			canAttack = false;
+			float stickInputX = Input.GetAxis ("LeftStickX_P" + playerNum);
+			float stickInputY = Input.GetAxis ("LeftStickY_P" + playerNum);
+			anim.SetTrigger(RPSX.input(stickInputX, stickInputY,directionMod,grounded(),running,crouching)); 
+		}
+	}
+
 	//Coroutine used to determine runstop slide;
 	IEnumerator RunStop (Vector2 endingRunSpeed) 
 	{
@@ -244,7 +264,16 @@ public class Player : MonoBehaviour {
 	public void doJump()
 	{
 		Jump (jumpSpeed, running);
+	}
 
+	public void AttackingON()
+	{
+		canAttack = true;
+	}
+
+	public void AttackingOFF()
+	{
+		canAttack = false;
 	}
 
 	public void stopHorizontalMomentum ()
