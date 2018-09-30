@@ -112,45 +112,89 @@ public class RPSX : MonoBehaviour {
 
 	}
 
-	public static string input (float x, float y, int dir, bool grounded, bool running, bool crouching)
+	public static string Input (float x, float y, int dir, bool grounded, bool running, bool crouching, bool leaping, bool strong)
 	{
 		string result = null; 
 		if (grounded) 
 		{
-			if (!running) {
-				if (x == 0 && y == 0) {
-					result = "GroundForward";
-				}
-				if (Mathf.Abs (x) > Mathf.Abs (y)) {
-					result = "GroundForward";
-				}
-				if ((Mathf.Abs (x) < Mathf.Abs (y)) && y < 0) {
-					result = "GroundUp"; 
-				}
-			} else {
+			if (!running) 
+            {
+                if (strong)
+                {
+                    if (x == 0 && y == 0)
+                    {
+                        result = "StrongGroundForward";
+                    }
+                    if (Mathf.Abs(x) > Mathf.Abs(y))
+                    {
+                        result = "StrongGroundForward";
+                    }
+                    if ((Mathf.Abs(x) < Mathf.Abs(y)) && y < 0)
+                    {
+                        result = "StrongGroundUp";
+                    }
+                }
+                else
+                {
+                    if (x == 0 && y == 0)
+                    {
+                        result = "GroundForward";
+                    }
+                    if (Mathf.Abs(x) > Mathf.Abs(y))
+                    {
+                        result = "GroundForward";
+                    }
+                    if ((Mathf.Abs(x) < Mathf.Abs(y)) && y < 0)
+                    {
+                        result = "GroundUp";
+                    }
+                }
+			} 
+            else 
+            {
 				result = "DashAttack";
 			}
 		} 
 		else 
 		{
-			if (x == 0 && y == 0) {
-				result = "ForwardAir";
-			}
-			if (Mathf.Abs (x) > Mathf.Abs (y)) 
-			{
-				if ((x > 0 && dir > 0) || (x < 0 && dir < 0)) {
-					result = "ForwardAir";
-				}
-				else {
-					result = "BackAir";
-				}
-			}
-			if ((Mathf.Abs (x) < Mathf.Abs (y)) && y > 0) {
-				result = "DownAir"; 
-			}
-			if ((Mathf.Abs (x) < Mathf.Abs (y)) && y < 0) {
-				result = "UpAir"; 
-			}
+            if (strong || leaping)
+            {
+                if (x == 0 && y == 0)
+                {
+                    result = "StrongAirForward";
+                }
+                if (Mathf.Abs(x) > Mathf.Abs(y))
+                {
+                    result = "StrongAirForward";
+                }
+                if ((Mathf.Abs(x) < Mathf.Abs(y)) && y > 0)
+                {
+                    result = "AirDown";
+                }
+                if ((Mathf.Abs(x) < Mathf.Abs(y)) && y < 0)
+                {
+                    result = "StrongAirUp";
+                }
+            }
+            else
+            {
+                if (x == 0 && y == 0)
+                {
+                    result = "AirForward";
+                }
+                if (Mathf.Abs(x) > Mathf.Abs(y))
+                {
+                    result = "AirForward";
+                }
+                if ((Mathf.Abs(x) < Mathf.Abs(y)) && y > 0)
+                {
+                    result = "AirDown";
+                }
+                if ((Mathf.Abs(x) < Mathf.Abs(y)) && y < 0)
+                {
+                    result = "AirUp";
+                }
+            }
 		}
 		return result;
 	}
