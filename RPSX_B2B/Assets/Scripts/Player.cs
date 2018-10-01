@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Anima2D;
 
 public class Player : MonoBehaviour
 {
@@ -24,6 +25,8 @@ public class Player : MonoBehaviour
     public int directionMod;
     bool crouching;
     bool canAttack;
+
+    public GameObject meshSkeleton;
 
     //Attack stuff
     public float dashBoostMultiplier;
@@ -49,6 +52,15 @@ public class Player : MonoBehaviour
     public float afterImageTimerCurrent;
     float afterImageTimerMax = 0.1f;
 
+    //RPS Stuff
+    public RPS_State currentState;
+    public List<SpriteMeshInstance> meshes = new List<SpriteMeshInstance>();
+    SpriteMeshAnimation sign;
+    SpriteMeshAnimation emblem;
+    Color rpsColor;
+    Color faded;
+    Color dark;
+
     // Use this for initialization
     void Start()
     {
@@ -70,10 +82,10 @@ public class Player : MonoBehaviour
             Actions();
         }
 
-        //		if (running) 
-        //		{
-        //			AfterImageEffect ();
-        //		}
+        //      if (running) 
+        //      {
+        //          AfterImageEffect ();
+        //      }
         LeapStop();
         if (canAttack)
         {
@@ -84,7 +96,7 @@ public class Player : MonoBehaviour
         {
             strong = true;
         }
-        else 
+        else
         {
             strong = false;
         }
@@ -96,6 +108,22 @@ public class Player : MonoBehaviour
         anim = GetComponent<Animator>();
         footOrigin = transform.GetChild(0);
         normalGrav = rb.gravityScale;
+        // Gets a reference to every mesh.
+        GameObject meshSkeleton = transform.GetChild(1).gameObject;
+        for (int i = 0; i < meshSkeleton.transform.childCount; i++)
+        {
+            GameObject currentMesh = meshSkeleton.transform.GetChild(i).gameObject;
+            SpriteMeshInstance smi = currentMesh.GetComponent<SpriteMeshInstance>();
+            meshes.Add(smi);
+            if (i == 0)
+            {
+                sign = currentMesh.GetComponent<SpriteMeshAnimation>();
+            }
+            if (i == 1)
+            {
+               emblem = currentMesh.GetComponent<SpriteMeshAnimation>();
+            }
+        }
     }
 
     //Actions the player can do while actionable
@@ -184,7 +212,7 @@ public class Player : MonoBehaviour
     {
         if (Input.GetButtonDown("AButton_P" + playerNum) && grounded())
         {
-            //			Jump (jumpSpeed, running);
+            //          Jump (jumpSpeed, running);
             anim.SetTrigger("Jump");
         }
 
@@ -255,6 +283,50 @@ public class Player : MonoBehaviour
         }
     }
 
+    //RPS Controls
+    public void ChangeRPSState(RPS_State rps)
+    {
+        currentState = rps;
+        int frame = 0;
+        if (rps == RPS_State.Scissors)
+        {
+            frame = 3;
+            rpsColor = RPSX.scissorsColor;
+            faded = RPSX.scissorsColorFaded;
+            dark = RPSX.scissorsColorDark;
+        }
+        else if (rps == RPS_State.Rock)
+        {
+            frame = 1;
+            rpsColor = RPSX.rockColor;
+            faded = RPSX.rockColorFaded;
+            dark = RPSX.rockColorDark;
+        }
+        else if (rps == RPS_State.Paper)
+        {
+            frame = 2;
+            rpsColor = RPSX.paperColor;
+            faded = RPSX.paperColorFaded;
+            dark = RPSX.paperColorDark;
+        }
+        else
+        {
+            frame = 0;
+            rpsColor = RPSX.basicColor;
+            faded = RPSX.basicColorFaded;
+            dark = RPSX.basicColor;
+        }
+
+        foreach (SpriteMeshInstance mesh in meshes)
+        {
+            mesh.color = rpsColor;
+        }
+
+        sign.frame = frame;
+        emblem.frame = frame;
+    }
+
+
     //Coroutine used to determine runstop slide;
     IEnumerator RunStop(Vector2 endingRunSpeed)
     {
@@ -292,7 +364,7 @@ public class Player : MonoBehaviour
         float currentFrame = 0.0f;
         do
         {
-            rb.velocity = Vector2.Lerp(endingMomentum,Vector2.zero, currentFrame / frames);
+            rb.velocity = Vector2.Lerp(endingMomentum, Vector2.zero, currentFrame / frames);
             currentFrame++;
             yield return null;
         }
@@ -382,7 +454,7 @@ public class Player : MonoBehaviour
         rb.velocity = new Vector2(slidingSpeed, rb.velocity.y);
     }
 
-    public void DashAttackSlide ()
+    public void DashAttackSlide()
     {
         running = false;
         float slidingSpeed = rb.velocity.x * dashBoostMultiplier;
@@ -390,33 +462,33 @@ public class Player : MonoBehaviour
         rb.velocity = new Vector2(slidingSpeed, rb.velocity.y);
     }
 
-	//Used for visualizing Raycasts and such.
-	void DebugStuff()
-	{
-		Vector3 footEndPoint = new Vector3 (footOrigin.position.x, footOrigin.position.y - footRaycastDistance, footOrigin.position.z);
-		Debug.DrawLine (footOrigin.transform.position, footEndPoint , Color.green);
+    //Used for visualizing Raycasts and such.
+    void DebugStuff()
+    {
+        Vector3 footEndPoint = new Vector3(footOrigin.position.x, footOrigin.position.y - footRaycastDistance, footOrigin.position.z);
+        Debug.DrawLine(footOrigin.transform.position, footEndPoint, Color.green);
 
-//		Vector3 frontEndPoint = new Vector3 (frontOrigin.position.x + frontRaycastDistance * directionModifier, frontOrigin.position.y, frontOrigin.position.z);
-//		Debug.DrawLine (frontOrigin.transform.position, frontEndPoint , Color.red);
-//
-//		Vector3 backEndPoint = new Vector3 (backOrigin.position.x - backRaycastDistance * directionModifier, backOrigin.position.y, backOrigin.position.z);
-//		Debug.DrawLine (backOrigin.transform.position, backEndPoint , Color.blue);
-	}
+        //      Vector3 frontEndPoint = new Vector3 (frontOrigin.position.x + frontRaycastDistance * directionModifier, frontOrigin.position.y, frontOrigin.position.z);
+        //      Debug.DrawLine (frontOrigin.transform.position, frontEndPoint , Color.red);
+        //
+        //      Vector3 backEndPoint = new Vector3 (backOrigin.position.x - backRaycastDistance * directionModifier, backOrigin.position.y, backOrigin.position.z);
+        //      Debug.DrawLine (backOrigin.transform.position, backEndPoint , Color.blue);
+    }
 
-	//Temp effect to show when running
-//	void AfterImageEffect()
-//	{
-//		afterImageTimerCurrent += Time.deltaTime;
-//
-//		if (afterImageTimerCurrent >= afterImageTimerMax) 
-//		{
-//			afterImageTimerCurrent = 0;
-//			GameObject afterImage = Instantiate (Resources.Load ("Prefabs/AfterImage")) as GameObject;
-////			SpriteRenderer afterImageSR = afterImage.GetComponent<SpriteRenderer> ();
-//			afterImage.transform.position = this.transform.position;
-////			afterImageSR.sprite = sr.sprite;
-////			afterImageSR.flipX = sr.flipX;
-////			afterImageSR.color = new Color (sr.color.r, sr.color.g, sr.color.b, 0.75f);
-//		}
-//	}
+    //Temp effect to show when running
+    //  void AfterImageEffect()
+    //  {
+    //      afterImageTimerCurrent += Time.deltaTime;
+    //
+    //      if (afterImageTimerCurrent >= afterImageTimerMax) 
+    //      {
+    //          afterImageTimerCurrent = 0;
+    //          GameObject afterImage = Instantiate (Resources.Load ("Prefabs/AfterImage")) as GameObject;
+    ////            SpriteRenderer afterImageSR = afterImage.GetComponent<SpriteRenderer> ();
+    //          afterImage.transform.position = this.transform.position;
+    ////            afterImageSR.sprite = sr.sprite;
+    ////            afterImageSR.flipX = sr.flipX;
+    ////            afterImageSR.color = new Color (sr.color.r, sr.color.g, sr.color.b, 0.75f);
+    //      }
+    //  }
 }
