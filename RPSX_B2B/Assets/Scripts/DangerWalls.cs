@@ -28,8 +28,14 @@ public class DangerWalls : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
+        Emblem.color = Color.clear;
         body = GetComponent<SpriteRenderer>();
-	}
+        body.color = Color.white;
+        foreach (SpriteRenderer sr in colorChangers)
+        {
+            sr.color = RPSX.normalWalls;
+        }
+    }
 	
 	// Update is called once per frame
 	void Update () 
@@ -171,7 +177,7 @@ public class DangerWalls : MonoBehaviour {
             RPS_Result result = RPSX.determineWinner(MyState, p.currentState);
             if (result == RPS_Result.Win)
             {
-                Debug.Log(this.gameObject.name + " destroyed " + p.gameObject.name);
+                p.KillCharacter(bright);
             }
         }
     }

@@ -60,6 +60,13 @@ public class Player : MonoBehaviour
     Color rpsColor;
     Color faded;
     Color dark;
+    public float timeInState;
+
+    //Getting Hit/Dying Stuff
+    int BurstParticles = 30;
+    bool dead;
+    float respawnTimer;
+    Vector3 respawnPos;
 
     // Use this for initialization
     void Start()
@@ -76,29 +83,37 @@ public class Player : MonoBehaviour
         {
             DebugStuff();
         }
-        HandleAnimations();
-        if (actionable)
+        if (!dead)
         {
-            Actions();
-        }
+            HandleAnimations();
+            HandleRPSTimer();
+            if (actionable)
+            {
+                Actions();
+            }
 
-        //      if (running) 
-        //      {
-        //          AfterImageEffect ();
-        //      }
-        LeapStop();
-        if (canAttack)
-        {
-            AttackControls();
-        }
+            //      if (running) 
+            //      {
+            //          AfterImageEffect ();
+            //      }
+            LeapStop();
+            if (canAttack)
+            {
+                AttackControls();
+            }
 
-        if (normals >= maxNormals)
-        {
-            strong = true;
+            if (normals >= maxNormals)
+            {
+                strong = true;
+            }
+            else
+            {
+                strong = false;
+            }
         }
         else
         {
-            strong = false;
+            Respawn();
         }
     }
 
@@ -108,6 +123,7 @@ public class Player : MonoBehaviour
         anim = GetComponent<Animator>();
         footOrigin = transform.GetChild(0);
         normalGrav = rb.gravityScale;
+        respawnPos = transform.position;
         // Gets a reference to every mesh.
         GameObject meshSkeleton = transform.GetChild(1).gameObject;
         for (int i = 0; i < meshSkeleton.transform.childCount; i++)
@@ -287,6 +303,7 @@ public class Player : MonoBehaviour
     public void ChangeRPSState(RPS_State rps)
     {
         currentState = rps;
+        timeInState = 0;
         int frame = 0;
         if (rps == RPS_State.Scissors)
         {
@@ -324,6 +341,49 @@ public class Player : MonoBehaviour
 
         sign.frame = frame;
         emblem.frame = frame;
+    }
+
+    void HandleRPSTimer()
+    {
+        if (currentState != RPS_State.Basic)
+        {
+            timeInState += Time.deltaTime;
+        }
+
+        if (timeInState > PlayerManager.maxStateTime)
+        {
+            ChangeRPSState(RPS_State.Basic);
+        }
+    }
+
+    //Handles dying
+    public void KillCharacter(Color color)
+    {
+
+        GameObject burst = Instantiate(Resources.Load("Prefabs/PlayerBurst")) as GameObject;
+        burst.transform.position = transform.position;
+        ParticleController pc = burst.GetComponent<ParticleController>();
+        pc.burst(color, BurstParticles);
+        Camera.main.gameObject.GetComponent<ScreenShaker>().shake(10);
+        dead = true;
+        PlayerManager.TakeDamage(playerNum - 1);
+        transform.position = PlayerManager.deadzone;
+        ChangeRPSState(RPS_State.Basic);
+    }
+
+    //Functionality that dictates how the player respawns after dying.
+    public void Respawn()
+    {
+        respawnTimer += Time.deltaTime;
+        rb.velocity = Vector2.zero;
+        rb.isKinematic = true;
+        if (respawnTimer >= PlayerManager.respawnTime)
+        {
+            rb.isKinematic = false;
+            transform.position = respawnPos;
+            dead = false;
+            respawnTimer = 0;
+        }
     }
 
 
@@ -460,6 +520,16 @@ public class Player : MonoBehaviour
         float slidingSpeed = rb.velocity.x * dashBoostMultiplier;
         DOTween.To(() => slidingSpeed, x => slidingSpeed = x, 0, 0.5f);
         rb.velocity = new Vector2(slidingSpeed, rb.velocity.y);
+    }
+
+    //Used to default out all variable values.
+    public void ResetValues()
+    {
+        leaping = false;
+        running = false;
+        walking = false;
+        rb.gravityScale = normalGrav;
+        normals = maxNormals;
     }
 
     //Used for visualizing Raycasts and such.

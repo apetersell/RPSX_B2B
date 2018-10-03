@@ -38,13 +38,6 @@ public class RPSX : MonoBehaviour {
 	public static Color inBounceStun = new Color (74f, 0f, 107f);
     public static Color normalWalls = new Color(0.19f, 0.19f, 0.19f);
 
-	public static float UIFlashSpeed = 3f;
-	public static float playerMaxHP = 20f;
-
-	public static float maxShieldDuration = 25f;
-
-	public static float rockThrowSpeed = 12;
-
 	public static string playerName (int playerNum)
 	{
 		string result = "";
