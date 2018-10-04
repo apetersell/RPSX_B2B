@@ -165,16 +165,19 @@ public class Player : MonoBehaviour
     //Actions the player can do while actionable
     void Actions()
     {
-        Move();
-        JumpControls();
-        //Determines if the run trigger is held
-        if (Input.GetAxis("RT_P" + playerNum) == 1)
+        if (!hit)
         {
-            runButton = true;
-        }
-        else
-        {
-            runButton = false;
+            Move();
+            JumpControls();
+            //Determines if the run trigger is held
+            if (Input.GetAxis("RT_P" + playerNum) == 1)
+            {
+                runButton = true;
+            }
+            else
+            {
+                runButton = false;
+            }
         }
     }
 
@@ -400,12 +403,12 @@ public class Player : MonoBehaviour
     //Called when the player is hit by an attack.
     public void TakeHit (Vector2 angle, float magnitude)
     {
-        Debug.Log(this.gameObject.name + " HIT!");
         Vector2 knockback = angle * magnitude;
         rb.velocity = knockback;
-        rb.gravityScale = 0;
+        rb.gravityScale = (normalGrav/2);
+        Camera.main.GetComponent<ScreenShaker>().shake(10);
         bool hit = true;
-        hitStun = 5;
+        hitStun = 1;
         rb.drag = 3;
     }
 
@@ -541,6 +544,7 @@ public class Player : MonoBehaviour
     public void stopHorizontalMomentum()
     {
         rb.velocity = new Vector2(0, rb.velocity.y);
+        Debug.Log("Stop");
     }
 
     public void airAttackStop(float frames)

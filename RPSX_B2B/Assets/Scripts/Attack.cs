@@ -59,7 +59,7 @@ public class Attack : MonoBehaviour {
         //        effectiveKB = baseKnockback * loseKnockbackGrowth;
         //        break;
         //}
-        float knockbackX = baseKnockbackAngle.x; //* (KBInfluenceX * stickInputX) * directionMod;
+        float knockbackX = baseKnockbackAngle.x * directionMod; //* (KBInfluenceX * stickInputX) * directionMod;
         float knockbackY = baseKnockbackAngle.y; //* (KBInfluenceY * stickInputY);
         effectiveKBA = new Vector2(knockbackX, knockbackY);
         player.TakeHit(effectiveKBA, effectiveKB);

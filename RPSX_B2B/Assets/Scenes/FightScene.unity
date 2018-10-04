@@ -3811,6 +3811,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseKnockback: 15
   baseKnockbackAngle: {x: 0, y: 1}
+  playersHit: []
   directionMod: 0
   stickInputX: 0
   stickInputY: 0
@@ -7188,6 +7189,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseKnockback: 15
   baseKnockbackAngle: {x: 0, y: 0}
+  playersHit: []
   directionMod: 0
   stickInputX: 0
   stickInputY: 0
@@ -14434,8 +14436,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa6f9e39b9e9d41d7afe844e2ddb2704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseKnockback: 10
+  baseKnockback: 15
   baseKnockbackAngle: {x: 1, y: 0}
+  playersHit: []
   directionMod: 0
   stickInputX: 0
   stickInputY: 0
@@ -14864,8 +14867,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa6f9e39b9e9d41d7afe844e2ddb2704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseKnockback: 10
+  baseKnockback: 20
   baseKnockbackAngle: {x: 0, y: 1}
+  playersHit: []
   directionMod: 0
   stickInputX: 0
   stickInputY: 0
@@ -16987,6 +16991,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseKnockback: 15
   baseKnockbackAngle: {x: 0, y: 1}
+  playersHit: []
   directionMod: 0
   stickInputX: 0
   stickInputY: 0
@@ -18306,6 +18311,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseKnockback: 10
   baseKnockbackAngle: {x: 1, y: 0}
+  playersHit: []
   directionMod: 0
   stickInputX: 0
   stickInputY: 0
@@ -19543,6 +19549,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseKnockback: 12
   baseKnockbackAngle: {x: 1, y: 1}
+  playersHit: []
   directionMod: 0
   stickInputX: 0
   stickInputY: 0
@@ -19641,6 +19648,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseKnockback: 15
   baseKnockbackAngle: {x: 1, y: 0}
+  playersHit: []
   directionMod: 0
   stickInputX: 0
   stickInputY: 0
@@ -20367,6 +20375,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseKnockback: 10
   baseKnockbackAngle: {x: 0, y: 1}
+  playersHit: []
   directionMod: 0
   stickInputX: 0
   stickInputY: 0
