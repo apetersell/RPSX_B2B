@@ -65,6 +65,8 @@ public class Player : MonoBehaviour
     //Getting Hit/Dying Stuff
     int BurstParticles = 30;
     bool dead;
+    bool hit;
+    float hitStun;
     float respawnTimer;
     Vector3 respawnPos;
 
@@ -74,11 +76,28 @@ public class Player : MonoBehaviour
         actionable = true;
         canAttack = true;
         GetReferences();
+        currentState = RPS_State.Basic;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (transform.localScale.x > 0)
+        {
+            directionMod = 1;
+        }
+        else
+        {
+            directionMod = -1;
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            actionable = false;
+            Vector2 testAngle = new Vector2(1, 0);
+            float testMagnitude = 10;
+            TakeHit(testAngle, testMagnitude);
+        }
+
         if (debug)
         {
             DebugStuff();
@@ -87,6 +106,7 @@ public class Player : MonoBehaviour
         {
             HandleAnimations();
             HandleRPSTimer();
+            HandleHitStun();
             if (actionable)
             {
                 Actions();
@@ -274,7 +294,6 @@ public class Player : MonoBehaviour
             //Reads stick input so we know direction.
             float stickInputX = Input.GetAxis("LeftStickX_P" + playerNum);
             float stickInputY = Input.GetAxis("LeftStickY_P" + playerNum);
-
             //Makes it so the player can switch directions while attacking.
             if (stickInputX > 0 && transform.localScale.x < 0 && !leaping)
             {
@@ -285,13 +304,20 @@ public class Player : MonoBehaviour
                 transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
             }
 
-            //Sends info to the animator to tell it what attack animation to do.
-
             if (!grounded())
             {
                 rb.gravityScale = attackGrav;
             }
-            anim.SetTrigger(RPSX.Input(stickInputX, stickInputY, directionMod, grounded(), running, crouching, leaping, strong));
+
+            string attackInput = RPSX.Input(stickInputX, stickInputY, directionMod, grounded(), running, crouching, leaping, strong);
+            Attack hitbox = GetComponent<AttackMoveset>().GetAttack(attackInput);
+            hitbox.stickInputX = stickInputX;
+            hitbox.stickInputY = stickInputY;
+            hitbox.directionMod = directionMod;
+            hitbox.playersHit.Clear();
+
+            //Sends info to the animator to tell it what attack animation to do.
+            anim.SetTrigger(attackInput);
             if (leaping)
             {
                 leaping = false;
@@ -369,6 +395,34 @@ public class Player : MonoBehaviour
         PlayerManager.TakeDamage(playerNum - 1);
         transform.position = PlayerManager.deadzone;
         ChangeRPSState(RPS_State.Basic);
+    }
+
+    //Called when the player is hit by an attack.
+    public void TakeHit (Vector2 angle, float magnitude)
+    {
+        Debug.Log(this.gameObject.name + " HIT!");
+        Vector2 knockback = angle * magnitude;
+        rb.velocity = knockback;
+        rb.gravityScale = 0;
+        bool hit = true;
+        hitStun = 5;
+        rb.drag = 3;
+    }
+
+    //Handles hitstun
+    public void HandleHitStun ()
+    {
+        if (hitStun > 0)
+        {
+            hitStun -= Time.deltaTime;
+        }
+        if (hitStun <= 0)
+        {
+            hitStun = 0;
+            hit = false;
+            rb.gravityScale = normalGrav;
+            rb.drag = 0;
+        }
     }
 
     //Functionality that dictates how the player respawns after dying.
