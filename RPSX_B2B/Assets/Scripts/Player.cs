@@ -96,6 +96,7 @@ public class Player : MonoBehaviour
             Vector2 testAngle = new Vector2(1, 0);
             float testMagnitude = 10;
             TakeHit(testAngle, testMagnitude);
+            Debug.Log("HIT");
         }
 
         if (debug)
@@ -403,11 +404,11 @@ public class Player : MonoBehaviour
     //Called when the player is hit by an attack.
     public void TakeHit (Vector2 angle, float magnitude)
     {
+        bool hit = true;
         Vector2 knockback = angle * magnitude;
         rb.velocity = knockback;
         rb.gravityScale = (normalGrav/2);
         Camera.main.GetComponent<ScreenShaker>().shake(10);
-        bool hit = true;
         hitStun = 1;
         rb.drag = 3;
     }
@@ -544,7 +545,6 @@ public class Player : MonoBehaviour
     public void stopHorizontalMomentum()
     {
         rb.velocity = new Vector2(0, rb.velocity.y);
-        Debug.Log("Stop");
     }
 
     public void airAttackStop(float frames)
