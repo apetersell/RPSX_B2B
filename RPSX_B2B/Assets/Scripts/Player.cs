@@ -312,9 +312,10 @@ public class Player : MonoBehaviour
 
             string attackInput = RPSX.Input(stickInputX, stickInputY, directionMod, grounded(), running, crouching, leaping, strong);
             Attack hitbox = GetComponent<AttackMoveset>().GetAttack(attackInput);
-            hitbox.stickInputX = stickInputX;
-            hitbox.stickInputY = stickInputY;
+            hitbox.stickInputX = Mathf.Abs(stickInputX);
+            hitbox.stickInputY = stickInputY * -1;
             hitbox.directionMod = directionMod;
+            hitbox.myState = currentState;
             hitbox.playersHit.Clear();
 
             //Sends info to the animator to tell it what attack animation to do.
@@ -407,6 +408,7 @@ public class Player : MonoBehaviour
         rb.velocity = knockback;
         rb.gravityScale = (normalGrav/2);
         Camera.main.GetComponent<ScreenShaker>().shake(10);
+        Debug.Log(angle);
         hitStun = 1;
         rb.drag = 3;
     }
@@ -418,7 +420,7 @@ public class Player : MonoBehaviour
         {
             hitStun -= Time.deltaTime;
         }
-        if (hitStun <= 0)
+        if (hitStun <= 0 && hit)
         {
             hitStun = 0;
             hit = false;

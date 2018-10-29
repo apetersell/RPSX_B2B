@@ -2824,12 +2824,12 @@ MonoBehaviour:
     m_SolverPoses:
     - m_Bone: {fileID: 0}
       m_BoneTransform: {fileID: 1289595831}
-      solverPosition: {x: -0.00000013818969, y: -0.00000011583285, z: 0}
-      solverRotation: {x: 0, y: 0, z: 0.3632886, w: 0.93167657}
+      solverPosition: {x: -0.0000004648777, y: 0.00000011470359, z: 0}
+      solverRotation: {x: 0, y: 0, z: 0.85308677, w: 0.52176917}
       defaultLocalRotation: {x: 0, y: 0, z: 0.9971558, w: -0.07536783}
     m_Weight: 1
     m_RestoreDefaultPose: 1
-    targetPosition: {x: -2.314744, y: -4.2338552, z: -0.110656306}
+    targetPosition: {x: -2.1081262, y: -3.9575725, z: -0.110656306}
     iterations: 10
     damping: 0.8
 --- !u!1 &326475101
@@ -3505,6 +3505,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa6f9e39b9e9d41d7afe844e2ddb2704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myState: 0
   baseKnockback: 15
   baseKnockbackAngle: {x: 0, y: 1}
   playersHit: []
@@ -3730,12 +3731,12 @@ MonoBehaviour:
     m_SolverPoses:
     - m_Bone: {fileID: 0}
       m_BoneTransform: {fileID: 765581537}
-      solverPosition: {x: -0.00000011363862, y: 0.00000042725628, z: 0}
-      solverRotation: {x: 0, y: 0, z: -0.013157685, w: 0.9999134}
+      solverPosition: {x: -0.0000005219221, y: 0.0000013259413, z: 0}
+      solverRotation: {x: 0, y: 0, z: -0.1447881, w: 0.9894628}
       defaultLocalRotation: {x: 0, y: 0, z: -0.8837932, w: 0.46787786}
     m_Weight: 1
     m_RestoreDefaultPose: 1
-    targetPosition: {x: -2.4358933, y: -2.3472748, z: -0.110656306}
+    targetPosition: {x: -1.8129067, y: -3.135965, z: -0.110656306}
     iterations: 10
     damping: 0.8
 --- !u!4 &396708536
@@ -6883,6 +6884,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa6f9e39b9e9d41d7afe844e2ddb2704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myState: 0
   baseKnockback: 15
   baseKnockbackAngle: {x: 0, y: 0}
   playersHit: []
@@ -7313,12 +7315,12 @@ MonoBehaviour:
     m_SolverPoses:
     - m_Bone: {fileID: 0}
       m_BoneTransform: {fileID: 287459692}
-      solverPosition: {x: -0.00000038401916, y: -0.0000006080061, z: 0}
-      solverRotation: {x: 0, y: 0, z: -0.13806461, w: -0.9904233}
+      solverPosition: {x: -0.0000005080823, y: -0.00000005506797, z: 0}
+      solverRotation: {x: 0, y: 0, z: -0.20749348, w: -0.9782365}
       defaultLocalRotation: {x: 0, y: 0, z: -0.89964753, w: -0.43661702}
     m_Weight: 1
     m_RestoreDefaultPose: 1
-    targetPosition: {x: -2.7146306, y: -3.6721163, z: -0.110656306}
+    targetPosition: {x: -2.5917158, y: -3.518875, z: -0.110656306}
     iterations: 10
     damping: 0.8
 --- !u!4 &907392171
@@ -14132,14 +14134,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa6f9e39b9e9d41d7afe844e2ddb2704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myState: 0
   baseKnockback: 10
-  baseKnockbackAngle: {x: 1, y: 0.5}
+  baseKnockbackAngle: {x: 1, y: 0}
   playersHit: []
   directionMod: 0
   stickInputX: 0
   stickInputY: 0
-  KBInfluenceX: 1
-  KBInfluenceY: 1
+  KBInfluenceX: 0
+  KBInfluenceY: 2
 --- !u!1 &1217171356
 GameObject:
   m_ObjectHideFlags: 0
@@ -14605,7 +14608,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa6f9e39b9e9d41d7afe844e2ddb2704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseKnockback: 20
+  myState: 0
+  baseKnockback: 10
   baseKnockbackAngle: {x: 0, y: 1}
   playersHit: []
   directionMod: 0
@@ -15977,12 +15981,12 @@ MonoBehaviour:
     m_SolverPoses:
     - m_Bone: {fileID: 0}
       m_BoneTransform: {fileID: 720573571}
-      solverPosition: {x: -0.00000036510383, y: 0.000000012169451, z: 0}
-      solverRotation: {x: 0, y: 0, z: -0.2842544, w: -0.95874894}
+      solverPosition: {x: -0.0000013416906, y: 0.00000006174929, z: 0}
+      solverRotation: {x: 0, y: 0, z: -0.9088199, w: -0.41718867}
       defaultLocalRotation: {x: 0, y: 0, z: -0.99630105, w: -0.08593203}
     m_Weight: 1
     m_RestoreDefaultPose: 1
-    targetPosition: {x: -2.5907402, y: -4.287466, z: -0.110656306}
+    targetPosition: {x: -2.4848871, y: -3.9542377, z: -0.110656306}
     iterations: 10
     damping: 0.8
 --- !u!4 &1452604624
@@ -16727,6 +16731,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa6f9e39b9e9d41d7afe844e2ddb2704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myState: 0
   baseKnockback: 15
   baseKnockbackAngle: {x: 0, y: 1}
   playersHit: []
@@ -18097,6 +18102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa6f9e39b9e9d41d7afe844e2ddb2704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myState: 0
   baseKnockback: 10
   baseKnockbackAngle: {x: 1, y: 0}
   playersHit: []
@@ -19335,6 +19341,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa6f9e39b9e9d41d7afe844e2ddb2704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myState: 0
   baseKnockback: 12
   baseKnockbackAngle: {x: 1, y: 1}
   playersHit: []
@@ -19434,6 +19441,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa6f9e39b9e9d41d7afe844e2ddb2704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myState: 0
   baseKnockback: 15
   baseKnockbackAngle: {x: 1, y: 0}
   playersHit: []
@@ -20161,6 +20169,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa6f9e39b9e9d41d7afe844e2ddb2704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myState: 0
   baseKnockback: 10
   baseKnockbackAngle: {x: 0, y: 1}
   playersHit: []

@@ -5,7 +5,8 @@ using UnityEngine;
 public class Attack : MonoBehaviour {
 
     Player owner;
-    public float baseKnockback; //How much knockback the damage does.
+    public RPS_State myState;
+    public float baseKnockback; //How much knockback does the attack inflict.
     public Vector2 baseKnockbackAngle; //At what angle does the attack send the player.
     public List<Player> playersHit = new List<Player>(); //List of players hit by the attack.  Used so that the hit player doesn't get hit multiple times.
     public float directionMod;
@@ -13,7 +14,7 @@ public class Attack : MonoBehaviour {
     public float stickInputY;
     public float KBInfluenceX;
     public float KBInfluenceY;
-    public static float winKnockbackGrownth = 1.5f;
+    public static float winKnockbackGrownth = 1.25f;
     public static float loseKnockbackGrowth = 0.25f;
 
     // Use this for initialization
@@ -46,21 +47,21 @@ public class Attack : MonoBehaviour {
     {
         Vector2 effectiveKBA = Vector2.zero;
         float effectiveKB = baseKnockback;
-        //RPS_Result result = RPSX.determineWinner(owner.currentState, player.currentState);
-        //switch (result)
-        //{
-        //    case RPS_Result.Tie:
-        //        effectiveKB = baseKnockback;
-        //        break;
-        //    case RPS_Result.Win:
-        //        effectiveKB = baseKnockback * winKnockbackGrownth;
-        //        break;
-        //    case RPS_Result.Loss:
-        //        effectiveKB = baseKnockback * loseKnockbackGrowth;
-        //        break;
-        //}
-        float knockbackX = baseKnockbackAngle.x * directionMod; //* (KBInfluenceX * stickInputX) * directionMod;
-        float knockbackY = baseKnockbackAngle.y; //* (KBInfluenceY * stickInputY);
+        RPS_Result result = RPSX.determineWinner(myState, player.currentState);
+        switch (result)
+        {
+            case RPS_Result.Tie:
+                effectiveKB = baseKnockback;
+                break;
+            case RPS_Result.Win:
+                effectiveKB = baseKnockback * winKnockbackGrownth;
+                break;
+            case RPS_Result.Loss:
+                effectiveKB = baseKnockback * loseKnockbackGrowth;
+                break;
+        }
+        float knockbackX = (baseKnockbackAngle.x + (stickInputX * KBInfluenceX)) * directionMod;
+        float knockbackY = baseKnockbackAngle.y + (stickInputY * KBInfluenceY);
         effectiveKBA = new Vector2(knockbackX, knockbackY);
         player.TakeHit(effectiveKBA, effectiveKB);
     }
