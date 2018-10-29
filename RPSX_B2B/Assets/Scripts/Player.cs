@@ -111,6 +111,10 @@ public class Player : MonoBehaviour
             if (actionable)
             {
                 Actions();
+                if (canAttack)
+                {
+                    AttackControls();
+                }
             }
 
             //      if (running) 
@@ -118,10 +122,6 @@ public class Player : MonoBehaviour
             //          AfterImageEffect ();
             //      }
             LeapStop();
-            if (canAttack)
-            {
-                AttackControls();
-            }
 
             if (normals >= maxNormals)
             {
@@ -166,8 +166,6 @@ public class Player : MonoBehaviour
     //Actions the player can do while actionable
     void Actions()
     {
-        if (!hit)
-        {
             Move();
             JumpControls();
             //Determines if the run trigger is held
@@ -179,7 +177,6 @@ public class Player : MonoBehaviour
             {
                 runButton = false;
             }
-        }
     }
 
     //Controls Player Movement
@@ -405,6 +402,7 @@ public class Player : MonoBehaviour
     public void TakeHit (Vector2 angle, float magnitude)
     {
         bool hit = true;
+        actionable = false;
         Vector2 knockback = angle * magnitude;
         rb.velocity = knockback;
         rb.gravityScale = (normalGrav/2);
@@ -424,6 +422,7 @@ public class Player : MonoBehaviour
         {
             hitStun = 0;
             hit = false;
+            actionable = true;
             rb.gravityScale = normalGrav;
             rb.drag = 0;
         }
