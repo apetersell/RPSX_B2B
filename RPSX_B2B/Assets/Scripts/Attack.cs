@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Attack : MonoBehaviour {
 
-    Player owner;
+    public Player owner;
     public RPS_State myState;
     public float baseKnockback; //How much knockback does the attack inflict.
     public Vector2 baseKnockbackAngle; //At what angle does the attack send the player.
@@ -15,7 +15,7 @@ public class Attack : MonoBehaviour {
     public float KBInfluenceX;
     public float KBInfluenceY;
     public static float winKnockbackGrownth = 1.25f;
-    public static float loseKnockbackGrowth = 0.25f;
+    public Vector2 reflectAngle;
 
     // Use this for initialization
     void Start () 
@@ -45,9 +45,11 @@ public class Attack : MonoBehaviour {
 
     void hitPlayer (Player player)
     {
-        Vector2 effectiveKBA = Vector2.zero;
         float effectiveKB = baseKnockback;
         RPS_Result result = RPSX.determineWinner(myState, player.currentState);
+        float knockbackX = (baseKnockbackAngle.x + (stickInputX * KBInfluenceX)) * directionMod;
+        float knockbackY = baseKnockbackAngle.y + (stickInputY * KBInfluenceY);
+        Vector2 effectiveKBA = new Vector2(knockbackX, knockbackY);
         switch (result)
         {
             case RPS_Result.Tie:
@@ -57,12 +59,20 @@ public class Attack : MonoBehaviour {
                 effectiveKB = baseKnockback * winKnockbackGrownth;
                 break;
             case RPS_Result.Loss:
-                effectiveKB = baseKnockback * loseKnockbackGrowth;
+                Debug.Log("PARRY");
                 break;
         }
-        float knockbackX = (baseKnockbackAngle.x + (stickInputX * KBInfluenceX)) * directionMod;
-        float knockbackY = baseKnockbackAngle.y + (stickInputY * KBInfluenceY);
-        effectiveKBA = new Vector2(knockbackX, knockbackY);
-        player.TakeHit(effectiveKBA, effectiveKB);
+        if (result != RPS_Result.Loss)
+        {
+            player.TakeHit(effectiveKBA, effectiveKB, false);
+        }
+        else 
+        {
+             GameObject parrySpark = Instantiate(Resources.Load("Prefabs/ParrySpark")) as GameObject;
+             parrySpark.transform.position = player.gameObject.transform.position;
+             parrySpark.GetComponent<SpriteRenderer>().color = RPSX.StateColor(player.currentState);
+             player.Parry(effectiveKBA);
+            owner.TakeHit(reflectAngle, baseKnockback, true);
+        }
     }
 }

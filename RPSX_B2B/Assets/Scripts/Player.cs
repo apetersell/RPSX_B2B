@@ -70,6 +70,9 @@ public class Player : MonoBehaviour
     float respawnTimer;
     Vector3 respawnPos;
 
+    //Parry stuff
+    float parryStunDuration = 20;
+
     // Use this for initialization
     void Start()
     {
@@ -90,14 +93,14 @@ public class Player : MonoBehaviour
         {
             directionMod = -1;
         }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            actionable = false;
-            Vector2 testAngle = new Vector2(1, 0);
-            float testMagnitude = 10;
-            TakeHit(testAngle, testMagnitude);
-            Debug.Log("HIT");
-        }
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    actionable = false;
+        //    Vector2 testAngle = new Vector2(1, 0);
+        //    float testMagnitude = 10;
+        //    TakeHit(testAngle, testMagnitude);
+        //    Debug.Log("HIT");
+        //}
 
         if (debug)
         {
@@ -108,13 +111,13 @@ public class Player : MonoBehaviour
             HandleAnimations();
             HandleRPSTimer();
             HandleHitStun();
+            if (canAttack)
+            {
+                AttackControls();
+            }
             if (actionable)
             {
                 Actions();
-                if (canAttack)
-                {
-                    AttackControls();
-                }
             }
 
             //      if (running) 
@@ -317,6 +320,7 @@ public class Player : MonoBehaviour
             hitbox.directionMod = directionMod;
             hitbox.myState = currentState;
             hitbox.playersHit.Clear();
+            hitbox.owner = this;
 
             //Sends info to the animator to tell it what attack animation to do.
             anim.SetTrigger(attackInput);
@@ -400,17 +404,71 @@ public class Player : MonoBehaviour
     }
 
     //Called when the player is hit by an attack.
-    public void TakeHit (Vector2 angle, float magnitude)
+    public void TakeHit (Vector2 angle, float magnitude, bool parry)
     {
         bool hit = true;
+        if (parry)
+        {
+            anim.SetTrigger("Parried");
+        }
+        else
+        {
+            anim.SetTrigger("init_Hit");
+        }
         actionable = false;
         Vector2 knockback = angle * magnitude;
+        //Changes the character orientation so that their always facing towards the thing that hit them.
+        if (knockback.x <= 0)
+        {
+            if (directionMod < 0)
+            {
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+            }
+        }
+        else 
+        {
+            if (directionMod > 0)
+            {
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+            }
+        }
         rb.velocity = knockback;
         rb.gravityScale = (normalGrav/2);
         Camera.main.GetComponent<ScreenShaker>().shake(10);
         Debug.Log(angle);
         hitStun = 1;
         rb.drag = 3;
+    }
+
+    //Called when the player parries an attack
+    public void Parry (Vector2 angle)
+    {
+        rb.velocity = Vector2.zero;
+        anim.SetTrigger("Block");
+        //Changes the character orientation so that their always facing towards the thing that hit them.
+        if (angle.x <= 0)
+        {
+            if (directionMod < 0)
+            {
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+            }
+        }
+        else
+        {
+            if (directionMod > 0)
+            {
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+            }
+        }
+    }
+
+    //Called when the players attack is blocked.
+    public void GetParried (Vector2 angle, float magnitude)
+    {
+        anim.SetTrigger("Parried");
+        Vector2 modAngle = new Vector2(angle.x * -1, 0);
+        Vector2 knockBack = angle * magnitude;
+        rb.velocity = knockBack;
     }
 
     //Handles hitstun
@@ -514,6 +572,7 @@ public class Player : MonoBehaviour
         anim.SetFloat("VerticalVelocity", rb.velocity.y);
         anim.SetBool("Grounded", grounded());
         anim.SetBool("Leaping", leaping);
+        anim.SetBool("Hit", hit);
     }
 
     //Animation Events

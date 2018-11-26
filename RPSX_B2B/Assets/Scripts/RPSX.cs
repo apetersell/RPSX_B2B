@@ -215,4 +215,26 @@ public class RPSX : MonoBehaviour {
 		return result;
 	}
 
+    public static Color StateColor (RPS_State state)
+    {
+        Color result = Color.white;
+
+        switch (state)
+        {
+            case RPS_State.Basic:
+                result = basicColor;
+                break;
+            case RPS_State.Rock:
+                result = rockColor;
+                break;
+            case RPS_State.Paper:
+                result = paperColor;
+                break;
+            case RPS_State.Scissors:
+                result = scissorsColor;
+                break;
+        }
+        return result;
+    }
+
 }
