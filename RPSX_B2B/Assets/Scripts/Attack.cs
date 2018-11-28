@@ -60,7 +60,10 @@ public class Attack : MonoBehaviour {
         }
         if (result != RPS_Result.Loss)
         {
-            player.TakeHit(effectiveKBA, effectiveKB);
+            if (!player.Invincible())
+            {
+                player.TakeHit(effectiveKBA, effectiveKB);
+            }
         }
         else 
         {

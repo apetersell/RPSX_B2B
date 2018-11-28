@@ -76,10 +76,14 @@ public class Player : MonoBehaviour
     float hitStun;
     float respawnTimer;
     Vector3 respawnPos;
+    float wallBounceIFrames = 20f;
 
     //Parry stuff
     float parryStunDuration = 20;
     float minimumStaggerKnockback = 1;
+
+    //Dodge Stuff
+    float IFrames = 0;
 
     // Use this for initialization
     void Start()
@@ -87,7 +91,7 @@ public class Player : MonoBehaviour
         actionable = true;
         canAttack = true;
         GetReferences();
-        currentState = RPS_State.Basic;
+        ChangeRPSState(RPS_State.Basic);
     }
 
     // Update is called once per frame
@@ -101,6 +105,7 @@ public class Player : MonoBehaviour
         {
             directionMod = -1;
         }
+
         //if (Input.GetKeyDown(KeyCode.Space))
         //{
         //    actionable = false;
@@ -119,6 +124,7 @@ public class Player : MonoBehaviour
             HandleAnimations();
             HandleRPSTimer();
             HandleHitStun();
+            HandleInvincibility();
             if (canAttack)
             {
                 AttackControls();
@@ -535,12 +541,42 @@ public class Player : MonoBehaviour
         }
     }
 
+    //Functionality around Invincibility
+    void HandleInvincibility()
+    {
+        Color InvincibleColor = Color.Lerp(rpsColor, Color.yellow, Mathf.PingPong(Time.time * 20, 1));
+        IFrames--;
+        if (IFrames < 0)
+        {
+            IFrames = 0;
+        }
+        if (Invincible())
+        {
+            foreach (SpriteMeshInstance mesh in meshes)
+            {
+                mesh.color = InvincibleColor;
+            }
+        }
+        else 
+        {
+            foreach (SpriteMeshInstance mesh in meshes)
+            {
+                mesh.color = rpsColor;
+            }
+        }
+    }
+
+    public bool Invincible()
+    {
+        return IFrames > 0;
+    }
     //Handles hitting walls while in hitstun
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Wall" && hitStun > 0)
         {
             rb.velocity = Vector2.Reflect(previousVelocity, collision.contacts[0].normal);
+            IFrames = wallBounceIFrames;
         }
     }
 
