@@ -19,4 +19,9 @@ public class Lifespan : MonoBehaviour {
             Destroy(this.gameObject);
         }
 	}
+
+    public void Die()
+    {
+        Destroy(this.gameObject);
+    }
 }

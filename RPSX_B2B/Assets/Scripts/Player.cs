@@ -25,8 +25,17 @@ public class Player : MonoBehaviour
     public int directionMod;
     bool crouching;
     bool canAttack;
+    Vector2 previousVelocity;
 
     public GameObject meshSkeleton;
+
+    //Raycast stuff
+    Transform footOrigin;
+    public float footRaycastDistance;
+    Transform frontOrigin;
+    public float frontRaycastDistance;
+    Transform backOrigin;
+    public float backRaycastDistance;
 
     //Attack stuff
     public float dashBoostMultiplier;
@@ -37,8 +46,6 @@ public class Player : MonoBehaviour
     public float attackGrav = 0;
 
     //JumpStuff
-    Transform footOrigin;
-    public float footRaycastDistance;
     float shortHopFrames = 3;
     bool leaping;
     public float leapForce;
@@ -72,6 +79,7 @@ public class Player : MonoBehaviour
 
     //Parry stuff
     float parryStunDuration = 20;
+    float minimumStaggerKnockback = 1;
 
     // Use this for initialization
     void Start()
@@ -141,15 +149,22 @@ public class Player : MonoBehaviour
         }
     }
 
+    void LateUpdate()
+    {
+        previousVelocity = rb.velocity;
+    }
+
     void GetReferences()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         footOrigin = transform.GetChild(0);
+        frontOrigin = transform.GetChild(1);
+        backOrigin = transform.GetChild(2);
         normalGrav = rb.gravityScale;
         respawnPos = transform.position;
         // Gets a reference to every mesh.
-        GameObject meshSkeleton = transform.GetChild(1).gameObject;
+        GameObject meshSkeleton = transform.GetChild(3).gameObject;
         for (int i = 0; i < meshSkeleton.transform.childCount; i++)
         {
             GameObject currentMesh = meshSkeleton.transform.GetChild(i).gameObject;
@@ -404,17 +419,10 @@ public class Player : MonoBehaviour
     }
 
     //Called when the player is hit by an attack.
-    public void TakeHit (Vector2 angle, float magnitude, bool parry)
+    public void TakeHit (Vector2 angle, float magnitude)
     {
-        bool hit = true;
-        if (parry)
-        {
-            anim.SetTrigger("Parried");
-        }
-        else
-        {
-            anim.SetTrigger("init_Hit");
-        }
+        hit = true;
+        anim.SetTrigger("init_Hit");
         actionable = false;
         Vector2 knockback = angle * magnitude;
         //Changes the character orientation so that their always facing towards the thing that hit them.
@@ -435,8 +443,7 @@ public class Player : MonoBehaviour
         rb.velocity = knockback;
         rb.gravityScale = (normalGrav/2);
         Camera.main.GetComponent<ScreenShaker>().shake(10);
-        Debug.Log(angle);
-        hitStun = 1;
+        hitStun = magnitude * 0.05f;
         rb.drag = 3;
     }
 
@@ -463,12 +470,52 @@ public class Player : MonoBehaviour
     }
 
     //Called when the players attack is blocked.
-    public void GetParried (Vector2 angle, float magnitude)
+    public void Stagger (Vector2 angle, float magnitude)
     {
+        hit = true;
         anim.SetTrigger("Parried");
-        Vector2 modAngle = new Vector2(angle.x * -1, 0);
-        Vector2 knockBack = angle * magnitude;
-        rb.velocity = knockBack;
+        actionable = false;
+        Vector2 staggerAngle = Vector2.zero;
+        if (grounded())
+        {
+            if (Mathf.Abs(angle.x) < minimumStaggerKnockback)
+            {
+                float knockBackdir = 0;
+                if (angle.x < 0)
+                {
+                    knockBackdir = -1;
+                }
+                else 
+                {
+                    knockBackdir = 1;
+                }
+                staggerAngle = new Vector2(minimumStaggerKnockback * knockBackdir, 0);
+            }
+            else 
+            {
+                staggerAngle = angle;
+            }
+        }
+        Vector2 knockback = staggerAngle * magnitude;
+        //Changes the character orientation so that their always facing towards the thing that hit them.
+        if (knockback.x <= 0)
+        {
+            if (directionMod < 0)
+            {
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+            }
+        }
+        else
+        {
+            if (directionMod > 0)
+            {
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+            }
+        }
+        rb.velocity = knockback;
+        rb.gravityScale = (normalGrav / 2);
+        hitStun = 1;
+        rb.drag = 3;
     }
 
     //Handles hitstun
@@ -485,6 +532,15 @@ public class Player : MonoBehaviour
             actionable = true;
             rb.gravityScale = normalGrav;
             rb.drag = 0;
+        }
+    }
+
+    //Handles hitting walls while in hitstun
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Wall" && hitStun > 0)
+        {
+            rb.velocity = Vector2.Reflect(previousVelocity, collision.contacts[0].normal);
         }
     }
 
@@ -557,6 +613,35 @@ public class Player : MonoBehaviour
         {
             //Debug.Log (below.collider.gameObject.name);
             return below.transform.gameObject.tag == "Floor";
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    //Keeps track of if the player is touching a wall.
+    bool TouchingWallBack()
+    {
+        RaycastHit2D front = Physics2D.Raycast(frontOrigin.transform.position, Vector2.right, frontRaycastDistance);
+        RaycastHit2D back = Physics2D.Raycast(backOrigin.transform.position, Vector2.left, backRaycastDistance);
+
+        if (back.collider != null)
+        {
+            return back.transform.gameObject.tag == "Wall";
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    bool TouchingWallFront()
+    {
+        RaycastHit2D front = Physics2D.Raycast(frontOrigin.transform.position, Vector2.right, frontRaycastDistance);
+        if (front.collider != null)
+        {
+            return front.transform.gameObject.tag == "Wall";
         }
         else
         {
@@ -653,14 +738,23 @@ public class Player : MonoBehaviour
     //Used for visualizing Raycasts and such.
     void DebugStuff()
     {
+        if (TouchingWallFront())
+        {
+            Debug.Log("FRONT");
+        }
+
+        if (TouchingWallBack())
+        {
+            Debug.Log("BACK");
+        }
         Vector3 footEndPoint = new Vector3(footOrigin.position.x, footOrigin.position.y - footRaycastDistance, footOrigin.position.z);
         Debug.DrawLine(footOrigin.transform.position, footEndPoint, Color.green);
 
-        //      Vector3 frontEndPoint = new Vector3 (frontOrigin.position.x + frontRaycastDistance * directionModifier, frontOrigin.position.y, frontOrigin.position.z);
-        //      Debug.DrawLine (frontOrigin.transform.position, frontEndPoint , Color.red);
-        //
-        //      Vector3 backEndPoint = new Vector3 (backOrigin.position.x - backRaycastDistance * directionModifier, backOrigin.position.y, backOrigin.position.z);
-        //      Debug.DrawLine (backOrigin.transform.position, backEndPoint , Color.blue);
+        Vector3 frontEndPoint = new Vector3 (frontOrigin.position.x + frontRaycastDistance * directionMod, frontOrigin.position.y, frontOrigin.position.z);
+        Debug.DrawLine (frontOrigin.transform.position, frontEndPoint , Color.red);
+
+        Vector3 backEndPoint = new Vector3 (backOrigin.position.x - backRaycastDistance * directionMod, backOrigin.position.y, backOrigin.position.z);
+        Debug.DrawLine (backOrigin.transform.position, backEndPoint , Color.blue);
     }
 
     //Temp effect to show when running

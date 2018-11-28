@@ -15,7 +15,6 @@ public class Attack : MonoBehaviour {
     public float KBInfluenceX;
     public float KBInfluenceY;
     public static float winKnockbackGrownth = 1.25f;
-    public Vector2 reflectAngle;
 
     // Use this for initialization
     void Start () 
@@ -58,21 +57,18 @@ public class Attack : MonoBehaviour {
             case RPS_Result.Win:
                 effectiveKB = baseKnockback * winKnockbackGrownth;
                 break;
-            case RPS_Result.Loss:
-                Debug.Log("PARRY");
-                break;
         }
         if (result != RPS_Result.Loss)
         {
-            player.TakeHit(effectiveKBA, effectiveKB, false);
+            player.TakeHit(effectiveKBA, effectiveKB);
         }
         else 
         {
-             GameObject parrySpark = Instantiate(Resources.Load("Prefabs/ParrySpark")) as GameObject;
-             parrySpark.transform.position = player.gameObject.transform.position;
-             parrySpark.GetComponent<SpriteRenderer>().color = RPSX.StateColor(player.currentState);
-             player.Parry(effectiveKBA);
-            owner.TakeHit(reflectAngle, baseKnockback, true);
+            GameObject parrySpark = Instantiate(Resources.Load("Prefabs/ParrySpark")) as GameObject;
+            parrySpark.transform.position = player.gameObject.transform.position;
+            parrySpark.GetComponent<SpriteRenderer>().color = RPSX.StateColor(player.currentState);
+            player.Parry(effectiveKBA);
+            owner.Stagger(effectiveKBA * -1, baseKnockback * 0.5f);
         }
     }
 }

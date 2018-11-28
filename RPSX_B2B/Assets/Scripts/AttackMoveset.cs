@@ -10,7 +10,7 @@ public class AttackMoveset : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
-        hitBoxes = transform.GetChild(2).gameObject;
+        hitBoxes = transform.GetChild(4).gameObject;
         attacks = new Attack[hitBoxes.transform.childCount];
         for (int i = 0; i < attacks.Length; i++)
         {
