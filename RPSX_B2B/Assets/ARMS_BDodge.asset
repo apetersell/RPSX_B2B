@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae0543fe805424df99fe08ce744cbe49, type: 3}
+  m_Name: ARMS_BDodge
+  m_EditorClassIdentifier: 
+  m_PoseEntries:
+  - path: Skeleton/Hip
+    localPosition: {x: -0.355556, y: 0.6822312, z: 0}
+    localRotation: {x: 0, y: 0, z: 0.86466086, w: 0.50235605}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Skeleton/Hip/LowerStomach
+    localPosition: {x: 0.5811228, y: 0, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.069216795, w: 0.9976016}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Skeleton/Hip/LowerStomach/UpperStomach
+    localPosition: {x: 0.1710588, y: -4.802132e-10, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.013272888, w: 0.99991196}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Skeleton/Hip/LowerStomach/UpperStomach/Chest
+    localPosition: {x: 0.2082598, y: -0.0000000027939677, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.12995514, w: 0.9915199}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Skeleton/Hip/LowerStomach/UpperStomach/Chest/Neck
+    localPosition: {x: 0.9100961, y: 6.771188e-10, z: 0}
+    localRotation: {x: 0, y: 0, z: 0, w: 1}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Skeleton/Hip/LowerStomach/UpperStomach/Chest/Neck/Head
+    localPosition: {x: 0.17000037, y: 0.000000021357664, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.11585606, w: 0.993266}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Skeleton/Hip/LowerStomach/UpperStomach/Chest/FrontUpperArm
+    localPosition: {x: 0.8812307, y: 0.58005506, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.9677801, w: -0.25179693}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Skeleton/Hip/LowerStomach/UpperStomach/Chest/FrontUpperArm/FrontLowerArm
+    localPosition: {x: 0.9399997, y: -0.00000017136335, z: 0}
+    localRotation: {x: 0, y: 0, z: 0.53391486, w: 0.84553826}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Skeleton/Hip/LowerStomach/UpperStomach/Chest/FrontUpperArm/FrontLowerArm/FrontHand
+    localPosition: {x: 0.88, y: -0.00000026077032, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.32212964, w: -0.94669557}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Skeleton/Hip/LowerStomach/UpperStomach/Chest/BackUpperArm
+    localPosition: {x: 0.6805348, y: -0.5391113, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.9999951, w: 0.0031402817}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Skeleton/Hip/LowerStomach/UpperStomach/Chest/BackUpperArm/BackLowerArm
+    localPosition: {x: 1.2099999, y: 0.00000018626451, z: 0}
+    localRotation: {x: 0, y: 0, z: 0.5805208, w: 0.8142454}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Skeleton/Hip/LowerStomach/UpperStomach/Chest/BackUpperArm/BackLowerArm/Sign
+    localPosition: {x: 1.000001, y: 0.00000008451116, z: 0}
+    localRotation: {x: 0, y: 0, z: 0.008756025, w: 0.9999617}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Skeleton/Hip/FrontThigh
+    localPosition: {x: 0.40854067, y: 0.5510196, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.99990076, w: 0.014090028}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Skeleton/Hip/FrontThigh/FrontCalf
+    localPosition: {x: 1.2700001, y: -0.00000015646219, z: 0}
+    localRotation: {x: 0, y: 0, z: 0, w: 1}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Skeleton/Hip/FrontThigh/FrontCalf/FrontShoe
+    localPosition: {x: 1.3900005, y: -0.00000018626451, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.5066474, w: -0.86215335}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Skeleton/Hip/BackThigh
+    localPosition: {x: 0.08265816, y: -0.40017694, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.9991921, w: 0.040189248}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Skeleton/Hip/BackThigh/BackCalf
+    localPosition: {x: 1.2368922, y: 0.00000012665987, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.0016286211, w: 0.9999987}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Skeleton/Hip/BackThigh/BackCalf/BackShoe
+    localPosition: {x: 1.4200021, y: 0.00000010313079, z: 0}
+    localRotation: {x: 0, y: 0, z: 0.47018042, w: 0.8825703}
+    localScale: {x: 1, y: 1, z: 1}

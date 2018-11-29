@@ -84,6 +84,9 @@ public class Player : MonoBehaviour
 
     //Dodge Stuff
     float IFrames = 0;
+    int AirDodges;
+    int maxAirDodges = 1;
+    float minDodgeInput = 0.25f;
 
     // Use this for initialization
     void Start()
@@ -92,6 +95,7 @@ public class Player : MonoBehaviour
         canAttack = true;
         GetReferences();
         ChangeRPSState(RPS_State.Basic);
+        AirDodges = maxAirDodges;
     }
 
     // Update is called once per frame
@@ -352,6 +356,63 @@ public class Player : MonoBehaviour
         }
     }
 
+    //Dodge Controls
+    void DodgeControls()
+    {
+        if (Input.GetButtonDown("B_Button_P" + playerNum))
+        {
+            float stickInputX = Input.GetAxis("LeftStickX_P" + playerNum);
+            float stickInputY = Input.GetAxis("LeftStickY_P" + playerNum);
+            Vector2 stickInput = new Vector2(stickInputX, stickInputY);
+            Dodge(stickInput);
+        }
+    }
+
+    void Dodge(Vector2 StickInput)
+    {
+        if (grounded())
+        {
+            if (directionMod > 0)
+            {
+                if (StickInput.x > minDodgeInput)
+                {
+                    anim.SetTrigger("Forward Dodge");
+                }
+                else if (StickInput.x < minDodgeInput * -1)
+                {
+                    anim.SetTrigger("Back Dodge");
+                }
+                else 
+                {
+                    anim.SetTrigger("Neutral Dodge");
+                }
+            }
+            else
+            {
+                if (StickInput.x < minDodgeInput * -1)
+                {
+                    anim.SetTrigger("Forward Dodge");
+                }
+                else if (StickInput.x > minDodgeInput)
+                {
+                    anim.SetTrigger("Back Dodge");
+                }
+                else
+                {
+                    anim.SetTrigger("Neutral Dodge");
+                }
+            }
+        }
+        else 
+        {
+            if (AirDodges > 0)
+            {
+                anim.SetTrigger("Air Dodge");
+                AirDodges--;
+            }
+        }
+    }
+
     //RPS Controls
     public void ChangeRPSState(RPS_State rps)
     {
@@ -544,7 +605,7 @@ public class Player : MonoBehaviour
     //Functionality around Invincibility
     void HandleInvincibility()
     {
-        Color InvincibleColor = Color.Lerp(rpsColor, Color.yellow, Mathf.PingPong(Time.time * 20, 1));
+        Color InvincibleColor = Color.Lerp(rpsColor, Color.black, Mathf.PingPong(Time.time * 20, 1));
         IFrames--;
         if (IFrames < 0)
         {
