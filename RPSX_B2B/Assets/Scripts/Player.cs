@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     public float walkSpeed;
     public float runSpeed;
     public float jumpSpeed;
-    float minWalkInput = 0.2f;
+    float minWalkInput = 0.3f;
     float minRunInput = 0.5f;
     bool runButton;
     bool actionable;
@@ -87,6 +87,8 @@ public class Player : MonoBehaviour
     int AirDodges;
     int maxAirDodges = 1;
     float minDodgeInput = 0.25f;
+    public float groundDodgeSpeed;
+    public float airDodgeSpeed;
 
     // Use this for initialization
     void Start()
@@ -110,6 +112,10 @@ public class Player : MonoBehaviour
             directionMod = -1;
         }
 
+        if (grounded())
+        {
+            AirDodges = maxAirDodges;
+        }
         //if (Input.GetKeyDown(KeyCode.Space))
         //{
         //    actionable = false;
@@ -194,17 +200,18 @@ public class Player : MonoBehaviour
     //Actions the player can do while actionable
     void Actions()
     {
-            Move();
-            JumpControls();
-            //Determines if the run trigger is held
-            if (Input.GetAxis("RT_P" + playerNum) == 1)
-            {
-                runButton = true;
-            }
-            else
-            {
-                runButton = false;
-            }
+        Move();
+        JumpControls();
+        DodgeControls();
+        //Determines if the run trigger is held
+        if (Input.GetAxis("RT_P" + playerNum) == 1)
+        {
+            runButton = true;
+        }
+        else
+        {
+            runButton = false;
+        }
     }
 
     //Controls Player Movement
@@ -262,11 +269,11 @@ public class Player : MonoBehaviour
         }
 
         //Makes sure character is facing the right way
-        if (stickInput > 0 && transform.localScale.x < 0 && !leaping)
+        if (stickInput > minWalkInput && transform.localScale.x < 0 && !leaping)
         {
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
         }
-        if (stickInput < 0 && transform.localScale.x > 0 && !leaping)
+        if (stickInput < minWalkInput * -1 && transform.localScale.x > 0 && !leaping)
         {
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
         }
@@ -359,56 +366,18 @@ public class Player : MonoBehaviour
     //Dodge Controls
     void DodgeControls()
     {
-        if (Input.GetButtonDown("B_Button_P" + playerNum))
+        if (Input.GetButtonDown("BButton_P" + playerNum))
         {
-            float stickInputX = Input.GetAxis("LeftStickX_P" + playerNum);
-            float stickInputY = Input.GetAxis("LeftStickY_P" + playerNum);
-            Vector2 stickInput = new Vector2(stickInputX, stickInputY);
-            Dodge(stickInput);
-        }
-    }
-
-    void Dodge(Vector2 StickInput)
-    {
-        if (grounded())
-        {
-            if (directionMod > 0)
+            if (grounded())
             {
-                if (StickInput.x > minDodgeInput)
-                {
-                    anim.SetTrigger("Forward Dodge");
-                }
-                else if (StickInput.x < minDodgeInput * -1)
-                {
-                    anim.SetTrigger("Back Dodge");
-                }
-                else 
-                {
-                    anim.SetTrigger("Neutral Dodge");
-                }
+                anim.SetTrigger("Dodge");
             }
-            else
+            else 
             {
-                if (StickInput.x < minDodgeInput * -1)
+                if (AirDodges > 0)
                 {
-                    anim.SetTrigger("Forward Dodge");
+                    anim.SetTrigger("Dodge");
                 }
-                else if (StickInput.x > minDodgeInput)
-                {
-                    anim.SetTrigger("Back Dodge");
-                }
-                else
-                {
-                    anim.SetTrigger("Neutral Dodge");
-                }
-            }
-        }
-        else 
-        {
-            if (AirDodges > 0)
-            {
-                anim.SetTrigger("Air Dodge");
-                AirDodges--;
             }
         }
     }
@@ -638,6 +607,7 @@ public class Player : MonoBehaviour
         {
             rb.velocity = Vector2.Reflect(previousVelocity, collision.contacts[0].normal);
             IFrames = wallBounceIFrames;
+            anim.SetTrigger("WallBounce");
         }
     }
 
@@ -746,6 +716,40 @@ public class Player : MonoBehaviour
         }
     }
 
+    bool HoldingForward()
+    {
+        float stickInputX = Input.GetAxis("LeftStickX_P" + playerNum);
+        if (stickInputX > minDodgeInput && directionMod > 0)
+        {
+            return true;
+        }
+        else if (stickInputX < minDodgeInput * -1 && directionMod < 0)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;
+        }
+    }
+
+    bool HoldingBack()
+    {
+        float stickInputX = Input.GetAxis("LeftStickX_P" + playerNum);
+        if (stickInputX > minDodgeInput && directionMod < 0)
+        {
+            return true;
+        }
+        else if (stickInputX < minDodgeInput * -1 && directionMod > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     //Sends appropriate information to the animator.
     void HandleAnimations()
     {
@@ -755,6 +759,8 @@ public class Player : MonoBehaviour
         anim.SetBool("Grounded", grounded());
         anim.SetBool("Leaping", leaping);
         anim.SetBool("Hit", hit);
+        anim.SetBool("HoldingForward", HoldingForward());
+        anim.SetBool("HoldingBack", HoldingBack());
     }
 
     //Animation Events
@@ -787,6 +793,11 @@ public class Player : MonoBehaviour
     public void stopHorizontalMomentum()
     {
         rb.velocity = new Vector2(0, rb.velocity.y);
+    }
+
+    public void stopAllMomentum ()
+    {
+        rb.velocity = Vector2.zero;
     }
 
     public void airAttackStop(float frames)
@@ -822,6 +833,45 @@ public class Player : MonoBehaviour
         rb.velocity = new Vector2(slidingSpeed, rb.velocity.y);
     }
 
+    public void AddIFrames (float frames)
+    {
+        IFrames += frames;
+    }
+
+    public void EndInvincibility ()
+    {
+        IFrames = 0;
+    }
+
+    public void GroundDodgeDash()
+    {
+        running = false;
+        if (HoldingForward())
+        {
+            rb.velocity = new Vector2(groundDodgeSpeed * directionMod, 0);
+        }
+        else
+        {
+            rb.velocity = new Vector2(groundDodgeSpeed * -directionMod, 0);
+        }
+    }
+
+    public void AirDodgeDash()
+    {
+        running = false;
+        leaping = false;
+        float stickInputX = Input.GetAxis("LeftStickX_P" + playerNum);
+        float stickInputY = Input.GetAxis("LeftStickY_P" + playerNum);
+        Vector2 angle = new Vector2(stickInputX, -stickInputY).normalized;
+        rb.velocity = angle * airDodgeSpeed;
+        AirDodges--;
+    }
+
+    public void MakeFloaty()
+    {
+        rb.gravityScale = attackGrav;
+    }
+
     //Used to default out all variable values.
     public void ResetValues()
     {
@@ -830,20 +880,12 @@ public class Player : MonoBehaviour
         walking = false;
         rb.gravityScale = normalGrav;
         normals = maxNormals;
+        AirDodges = maxAirDodges;
     }
 
     //Used for visualizing Raycasts and such.
     void DebugStuff()
     {
-        if (TouchingWallFront())
-        {
-            Debug.Log("FRONT");
-        }
-
-        if (TouchingWallBack())
-        {
-            Debug.Log("BACK");
-        }
         Vector3 footEndPoint = new Vector3(footOrigin.position.x, footOrigin.position.y - footRaycastDistance, footOrigin.position.z);
         Debug.DrawLine(footOrigin.transform.position, footEndPoint, Color.green);
 
