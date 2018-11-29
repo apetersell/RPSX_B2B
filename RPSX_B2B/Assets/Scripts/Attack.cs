@@ -15,6 +15,7 @@ public class Attack : MonoBehaviour {
     public float KBInfluenceX;
     public float KBInfluenceY;
     public static float winKnockbackGrownth = 1.25f;
+    public int dizzyDamage;
 
     // Use this for initialization
     void Start () 
@@ -56,6 +57,7 @@ public class Attack : MonoBehaviour {
                 break;
             case RPS_Result.Win:
                 effectiveKB = baseKnockback * winKnockbackGrownth;
+                PlayerManager.TakeDizzy(dizzyDamage, player.playerNum);
                 break;
         }
         if (result != RPS_Result.Loss)
@@ -71,6 +73,7 @@ public class Attack : MonoBehaviour {
             parrySpark.transform.position = player.gameObject.transform.position;
             parrySpark.GetComponent<SpriteRenderer>().color = RPSX.StateColor(player.currentState);
             player.Parry(effectiveKBA);
+            PlayerManager.RecoverDizzy(dizzyDamage, player.playerNum);
             owner.Stagger(effectiveKBA * -1, baseKnockback * 0.5f);
         }
     }

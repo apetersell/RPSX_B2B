@@ -11,9 +11,11 @@ public class Scoreboard : MonoBehaviour
     Image[] stateTimers;
     Image[] portraits;
     Image[] hearts;
+    public Image [] dizzyMeters;
     Image arrow;
     Text clock;
     Text[] healthDisplays;
+   public Text[] dizzyDisplays;
     Color[] lerpingColors;
     Color[] dark;
     Color[] bright;
@@ -28,7 +30,9 @@ public class Scoreboard : MonoBehaviour
         stateTimers = new Image[numberOfPlayers];
         portraits = new Image[numberOfPlayers];
         hearts = new Image[numberOfPlayers];
+        dizzyMeters = new Image[numberOfPlayers];
         healthDisplays = new Text[numberOfPlayers];
+        dizzyDisplays = new Text[numberOfPlayers];
         lerpingColors = new Color[numberOfPlayers];
         dark = new Color[numberOfPlayers]; 
         bright = new Color[numberOfPlayers]; 
@@ -54,7 +58,9 @@ public class Scoreboard : MonoBehaviour
             stateTimers[i] = GameObject.Find("StateTimer_P" + (i + 1)).GetComponent<Image>();
             portraits[i] = GameObject.Find("Portrait_P" + (i + 1)).GetComponent<Image>();
             hearts[i] = GameObject.Find("Heart_P" + (i + 1)).GetComponent<Image>();
+            dizzyMeters[i] = GameObject.Find("DizzyMeter_P" + (i + 1)).GetComponent<Image>();
             healthDisplays[i] = GameObject.Find("HealthDisplay_P" + (i + 1)).GetComponent<Text>();
+            dizzyDisplays[i] = GameObject.Find("DizzyDisplay_P" + (i + 1)).GetComponent<Text>();
         }
         clock = GameObject.Find("Clock").GetComponent<Text>();
         arrow = GameObject.Find("Arrow").GetComponent<Image>();
@@ -128,6 +134,7 @@ public class Scoreboard : MonoBehaviour
         heart.color = normal[playerNum];
 
         healthDisplays[playerNum].text = PlayerManager.healthTotals[playerNum].ToString();
+        dizzyDisplays[playerNum].text = PlayerManager.dizzyTotals[playerNum].ToString();
         float currentFillAmount = PlayerManager.maxStateTime - player.timeInState;
         stateTimer.fillAmount = RPSX.fillAmount(currentFillAmount, PlayerManager.maxStateTime);
     }

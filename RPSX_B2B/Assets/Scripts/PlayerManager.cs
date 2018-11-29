@@ -14,7 +14,10 @@ public class PlayerManager : MonoBehaviour {
     //Player values
     public int maxHealth = 10;
     public static float maxStateTime = 10;
+    public static int maxDizzyTime;
     public static int[] healthTotals;
+    public static int[] dizzyTotals;
+    public static bool[] isDizzy;
     public static float[] stateTimerTotals;
     Player[] players;
 
@@ -22,6 +25,7 @@ public class PlayerManager : MonoBehaviour {
 	void Start () 
     {
         healthTotals = new int[numberOfPlayers];
+        dizzyTotals = new int[numberOfPlayers];
         players = new Player[numberOfPlayers];
         for (int i = 0; i < numberOfPlayers; i++)
         {
@@ -30,17 +34,38 @@ public class PlayerManager : MonoBehaviour {
         for (int i = 0; i < numberOfPlayers; i++)
         {
             healthTotals[i] = maxHealth;
+            dizzyTotals[i] = players[i].maxDizzyHits;
         }
     }
 	
 	// Update is called once per frame
 	void Update () 
     {
-		
-	}
+        for (int i = 0; i < dizzyTotals.Length; i++)
+        {
+            if (dizzyTotals[i] > players[i].maxDizzyHits)
+            {
+                dizzyTotals[i] = players[i].maxDizzyHits;
+            }
+            if(dizzyTotals[i] < 0)
+            {
+                dizzyTotals[i] = 0;
+            }
+        }
+    }
 
     public static void TakeDamage (int playerNum)
     {
         healthTotals[playerNum]--;
+    }
+
+    public static void TakeDizzy (int damage, int playerNum)
+    {
+        dizzyTotals[playerNum - 1] -= damage;
+    }
+
+    public static void RecoverDizzy (int damage, int playerNum)
+    {
+        dizzyTotals[playerNum - 1] += damage;
     }
 }

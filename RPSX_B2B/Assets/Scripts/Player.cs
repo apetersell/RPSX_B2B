@@ -77,6 +77,7 @@ public class Player : MonoBehaviour
     float respawnTimer;
     Vector3 respawnPos;
     float wallBounceIFrames = 20f;
+    public int maxDizzyHits = 7;
 
     //Parry stuff
     float parryStunDuration = 20;
@@ -143,7 +144,6 @@ public class Player : MonoBehaviour
             {
                 Actions();
             }
-
             //      if (running) 
             //      {
             //          AfterImageEffect ();
