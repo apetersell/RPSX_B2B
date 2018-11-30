@@ -40,7 +40,10 @@ public class Coin : MonoBehaviour {
         if (coll.gameObject.GetComponent<Player>() != null)
         {
             Player player = coll.gameObject.GetComponent<Player>();
-            player.ChangeRPSState(myState);
+            if (!player.Dizzy())
+            {
+                player.ChangeRPSState(myState);
+            }
         }
     }
 }

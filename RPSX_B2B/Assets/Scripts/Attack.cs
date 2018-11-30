@@ -72,8 +72,11 @@ public class Attack : MonoBehaviour {
             GameObject parrySpark = Instantiate(Resources.Load("Prefabs/ParrySpark")) as GameObject;
             parrySpark.transform.position = player.gameObject.transform.position;
             parrySpark.GetComponent<SpriteRenderer>().color = RPSX.StateColor(player.currentState);
-            player.Parry(effectiveKBA);
-            PlayerManager.RecoverDizzy(dizzyDamage, player.playerNum);
+            if (!player.Dizzy())
+            {
+                player.Parry(effectiveKBA);
+                PlayerManager.RecoverDizzy(dizzyDamage, player.playerNum);
+            }
             owner.Stagger(effectiveKBA * -1, baseKnockback * 0.5f);
         }
     }

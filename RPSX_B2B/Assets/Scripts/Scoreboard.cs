@@ -137,6 +137,14 @@ public class Scoreboard : MonoBehaviour
         dizzyDisplays[playerNum].text = PlayerManager.dizzyTotals[playerNum].ToString();
         float currentFillAmount = PlayerManager.maxStateTime - player.timeInState;
         stateTimer.fillAmount = RPSX.fillAmount(currentFillAmount, PlayerManager.maxStateTime);
+        if (players[playerNum].Dizzy())
+        {
+            dizzyMeters[playerNum].fillAmount = PlayerManager.dizzyTimers[playerNum] / PlayerManager.maxDizzyTime;
+        }
+        else 
+        {
+            dizzyMeters[playerNum].fillAmount = RPSX.fillAmount (PlayerManager.dizzyTotals[playerNum], players[playerNum].maxDizzyHits);
+        }
     }
 
     void ArrowPoint()

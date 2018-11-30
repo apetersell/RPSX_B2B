@@ -77,11 +77,12 @@ public class Player : MonoBehaviour
     float respawnTimer;
     Vector3 respawnPos;
     float wallBounceIFrames = 20f;
-    public int maxDizzyHits = 7;
+    public int maxDizzyHits = 8;
 
     //Parry stuff
     float parryStunDuration = 20;
     float minimumStaggerKnockback = 1;
+    bool Staggered;
 
     //Dodge Stuff
     float IFrames = 0;
@@ -428,7 +429,7 @@ public class Player : MonoBehaviour
 
     void HandleRPSTimer()
     {
-        if (currentState != RPS_State.Basic)
+        if (currentState != RPS_State.Basic && !Dizzy())
         {
             timeInState += Time.deltaTime;
         }
@@ -509,6 +510,7 @@ public class Player : MonoBehaviour
     public void Stagger (Vector2 angle, float magnitude)
     {
         hit = true;
+        Staggered = true;
         anim.SetTrigger("Parried");
         actionable = false;
         Vector2 staggerAngle = Vector2.zero;
@@ -565,6 +567,7 @@ public class Player : MonoBehaviour
         {
             hitStun = 0;
             hit = false;
+            Staggered = false;
             actionable = true;
             rb.gravityScale = normalGrav;
             rb.drag = 0;
@@ -606,8 +609,11 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "Wall" && hitStun > 0)
         {
             rb.velocity = Vector2.Reflect(previousVelocity, collision.contacts[0].normal);
-            IFrames = wallBounceIFrames;
-            anim.SetTrigger("WallBounce");
+            if (!Staggered)
+            {
+                IFrames = wallBounceIFrames;
+                anim.SetTrigger("WallBounce");
+            }
         }
     }
 
@@ -750,6 +756,11 @@ public class Player : MonoBehaviour
         }
     }
 
+   public bool Dizzy()
+    {
+        return PlayerManager.dizzyTotals[playerNum -1] == 0;
+    }
+
     //Sends appropriate information to the animator.
     void HandleAnimations()
     {
@@ -761,6 +772,7 @@ public class Player : MonoBehaviour
         anim.SetBool("Hit", hit);
         anim.SetBool("HoldingForward", HoldingForward());
         anim.SetBool("HoldingBack", HoldingBack());
+        anim.SetBool("Staggered", Staggered);
     }
 
     //Animation Events
