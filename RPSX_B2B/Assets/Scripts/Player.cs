@@ -76,7 +76,7 @@ public class Player : MonoBehaviour
     float hitStun;
     float respawnTimer;
     Vector3 respawnPos;
-    float wallBounceIFrames = 20f;
+    float wallBounceIFrames = 30f;
     public int maxDizzyHits = 8;
 
     //Parry stuff
@@ -91,6 +91,9 @@ public class Player : MonoBehaviour
     float minDodgeInput = 0.25f;
     public float groundDodgeSpeed;
     public float airDodgeSpeed;
+
+    //Dizzy Stuff
+    GameObject dizzyEffect;
 
     // Use this for initialization
     void Start()
@@ -137,6 +140,7 @@ public class Player : MonoBehaviour
             HandleRPSTimer();
             HandleHitStun();
             HandleInvincibility();
+            ColorHandler();
             if (canAttack)
             {
                 AttackControls();
@@ -145,10 +149,6 @@ public class Player : MonoBehaviour
             {
                 Actions();
             }
-            //      if (running) 
-            //      {
-            //          AfterImageEffect ();
-            //      }
             LeapStop();
 
             if (normals >= maxNormals)
@@ -164,6 +164,7 @@ public class Player : MonoBehaviour
         {
             Respawn();
         }
+        dizzyEffect.SetActive(Dizzy());
     }
 
     void LateUpdate()
@@ -178,6 +179,7 @@ public class Player : MonoBehaviour
         footOrigin = transform.GetChild(0);
         frontOrigin = transform.GetChild(1);
         backOrigin = transform.GetChild(2);
+        dizzyEffect = transform.GetChild(5).gameObject;
         normalGrav = rb.gravityScale;
         respawnPos = transform.position;
         // Gets a reference to every mesh.
@@ -201,17 +203,20 @@ public class Player : MonoBehaviour
     //Actions the player can do while actionable
     void Actions()
     {
-        Move();
-        JumpControls();
-        DodgeControls();
-        //Determines if the run trigger is held
-        if (Input.GetAxis("RT_P" + playerNum) == 1)
+        if (!Dizzy())
         {
-            runButton = true;
-        }
-        else
-        {
-            runButton = false;
+            Move();
+            JumpControls();
+            DodgeControls();
+            //Determines if the run trigger is held
+            if (Input.GetAxis("RT_P" + playerNum) == 1)
+            {
+                runButton = true;
+            }
+            else
+            {
+                runButton = false;
+            }
         }
     }
 
@@ -323,7 +328,7 @@ public class Player : MonoBehaviour
     //Attack Controls
     void AttackControls()
     {
-        if (Input.GetButtonDown("XButton_P" + playerNum))
+        if (Input.GetButtonDown("XButton_P" + playerNum) && !Dizzy())
         {
             //Increments normals so that it goes into strong attack;
             normals++;
@@ -415,7 +420,7 @@ public class Player : MonoBehaviour
             frame = 0;
             rpsColor = RPSX.basicColor;
             faded = RPSX.basicColorFaded;
-            dark = RPSX.basicColor;
+            dark = RPSX.basicColorDark;
         }
 
         foreach (SpriteMeshInstance mesh in meshes)
@@ -451,6 +456,7 @@ public class Player : MonoBehaviour
         Camera.main.gameObject.GetComponent<ScreenShaker>().shake(10);
         dead = true;
         PlayerManager.TakeDamage(playerNum - 1);
+
         transform.position = PlayerManager.deadzone;
         ChangeRPSState(RPS_State.Basic);
     }
@@ -577,31 +583,17 @@ public class Player : MonoBehaviour
     //Functionality around Invincibility
     void HandleInvincibility()
     {
-        Color InvincibleColor = Color.Lerp(rpsColor, Color.black, Mathf.PingPong(Time.time * 20, 1));
         IFrames--;
         if (IFrames < 0)
         {
             IFrames = 0;
-        }
-        if (Invincible())
-        {
-            foreach (SpriteMeshInstance mesh in meshes)
-            {
-                mesh.color = InvincibleColor;
-            }
-        }
-        else 
-        {
-            foreach (SpriteMeshInstance mesh in meshes)
-            {
-                mesh.color = rpsColor;
-            }
         }
     }
 
     public bool Invincible()
     {
         return IFrames > 0;
+
     }
     //Handles hitting walls while in hitstun
     void OnCollisionEnter2D(Collision2D collision)
@@ -611,7 +603,10 @@ public class Player : MonoBehaviour
             rb.velocity = Vector2.Reflect(previousVelocity, collision.contacts[0].normal);
             if (!Staggered)
             {
-                IFrames = wallBounceIFrames;
+                if (!Dizzy())
+                {
+                    IFrames = wallBounceIFrames;
+                }
                 anim.SetTrigger("WallBounce");
             }
         }
@@ -623,12 +618,18 @@ public class Player : MonoBehaviour
         respawnTimer += Time.deltaTime;
         rb.velocity = Vector2.zero;
         rb.isKinematic = true;
+        PlayerManager.dizzyTotals[playerNum - 1] = maxDizzyHits;
+        PlayerManager.dizzyTimers[playerNum - 1] = 0;
         if (respawnTimer >= PlayerManager.respawnTime)
         {
             rb.isKinematic = false;
             transform.position = respawnPos;
+            rb.gravityScale = normalGrav;
+            ResetValues();
             dead = false;
             respawnTimer = 0;
+            hit = false;
+            hitStun = 0;
         }
     }
 
@@ -690,6 +691,37 @@ public class Player : MonoBehaviour
         else
         {
             return false;
+        }
+    }
+
+    //Handles the player's color
+    void ColorHandler()
+    {
+        Color dizzyColor = Color.Lerp(rpsColor, dark, Mathf.PingPong(Time.time * 2, 1));
+        Color InvincibleColor = Color.Lerp(rpsColor, Color.magenta, Mathf.PingPong(Time.time * 20, 1));
+        if (Invincible())
+        {
+            foreach (SpriteMeshInstance mesh in meshes)
+            {
+                mesh.color = InvincibleColor;
+            }
+        }
+        else
+        {
+            if (Dizzy())
+            {
+                foreach (SpriteMeshInstance mesh in meshes)
+                {
+                    mesh.color = dizzyColor;
+                }
+            }
+            else
+            {
+                foreach (SpriteMeshInstance mesh in meshes)
+                {
+                    mesh.color = rpsColor;
+                }
+            }
         }
     }
 
@@ -773,6 +805,7 @@ public class Player : MonoBehaviour
         anim.SetBool("HoldingForward", HoldingForward());
         anim.SetBool("HoldingBack", HoldingBack());
         anim.SetBool("Staggered", Staggered);
+        anim.SetBool("Dizzy", Dizzy());
     }
 
     //Animation Events

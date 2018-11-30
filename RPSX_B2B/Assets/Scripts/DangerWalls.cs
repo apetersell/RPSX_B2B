@@ -177,7 +177,10 @@ public class DangerWalls : MonoBehaviour {
             RPS_Result result = RPSX.determineWinner(MyState, p.currentState);
             if (result == RPS_Result.Win)
             {
-                p.KillCharacter(bright);
+                if (!p.Invincible())
+                {
+                    p.KillCharacter(bright);
+                }
             }
         }
     }
