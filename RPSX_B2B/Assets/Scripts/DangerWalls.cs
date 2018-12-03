@@ -22,12 +22,14 @@ public class DangerWalls : MonoBehaviour {
     float currentRouletteTimer;
     float spinTransitionTime = 5f;
     float spinTransitionTimer;
-    public static float flashSpeed = 3f;
+    public static float flashSpeed = 10f;
     public List<Player> players;
+    List<Player> killablePlayers;
 
 	// Use this for initialization
 	void Start () 
     {
+        killablePlayers = new List<Player>();
         Emblem.color = Color.clear;
         body = GetComponent<SpriteRenderer>();
         body.color = Color.white;
@@ -115,10 +117,25 @@ public class DangerWalls : MonoBehaviour {
             {
                 foreach (SpriteRenderer sr in colorChangers)
                 {
-                    sr.color = lerpingColor;
+                    if (canKill())
+                    {
+                        sr.color = lerpingColor;
+                    }
+                    else 
+                    {
+                        sr.color = dark;
+                    }
                 }
-                Emblem.color = lerpingColor;
-                body.color = saturated;
+                if (canKill())
+                {
+                    Emblem.color = lerpingColor;
+                    body.color = saturated;
+                }
+                else 
+                {
+                    Emblem.color = dark;
+                    body.color = faded;
+                }
             }
         }
     }
@@ -172,12 +189,48 @@ public class DangerWalls : MonoBehaviour {
 
     void CheckForPlayers ()
     {
+        List<Player> toJunk = new List<Player>();
+        foreach (Player p in killablePlayers)
+        {
+            if (!p.Dizzy())
+            {
+                toJunk.Add(p);
+            }
+            else 
+            {
+                RPS_Result result = RPSX.determineWinner(MyState, p.currentState);
+                if (result != RPS_Result.Win)
+                {
+                    toJunk.Add(p);
+                }
+            }
+        }
+        if (toJunk.Count != 0)
+        {
+            for (int i = 0; i < toJunk.Count; i++)
+            {
+                Player p = toJunk[i];
+                killablePlayers.Remove(p);
+            }
+        }
+        for (int i = 0; i < PlayerManager.numberOfPlayers; i++)
+        {
+            Player p = PlayerManager.players[i];
+            if (p.Dizzy())
+            {
+                RPS_Result result = RPSX.determineWinner(MyState, p.currentState);
+                if (result == RPS_Result.Win)
+                {
+                    killablePlayers.Add(p);
+                }
+            }
+        }
         foreach (Player p in players)
         {
             RPS_Result result = RPSX.determineWinner(MyState, p.currentState);
             if (result == RPS_Result.Win)
             {
-                if (!p.Invincible())
+                if (p.Dizzy() && canKill())
                 {
                     p.KillCharacter(bright);
                 }
@@ -208,4 +261,10 @@ public class DangerWalls : MonoBehaviour {
             }
         }
     }
+
+    bool canKill()
+    {
+        return killablePlayers.Count != 0;
+    }
+
 }

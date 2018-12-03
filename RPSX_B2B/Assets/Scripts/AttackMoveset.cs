@@ -58,6 +58,9 @@ public class AttackMoveset : MonoBehaviour {
             case "DashAttack":
                 attack = attacks[8];
                 break;
+            case "AirDown":
+                attack = attacks[9];
+                break;
         }
 
         return attack;

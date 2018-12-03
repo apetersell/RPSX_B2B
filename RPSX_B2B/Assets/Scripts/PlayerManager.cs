@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PlayerManager : MonoBehaviour {
 
     //Universal respawn values.
-    public int numberOfPlayers;
+    public static int numberOfPlayers = 2;
     public static float respawnTime = 3f;
     public static float respawnInvincibility;
     public static Vector3 deadzone = new Vector3(15f, 15f, 0f);

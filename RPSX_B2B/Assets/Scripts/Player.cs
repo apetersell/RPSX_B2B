@@ -95,6 +95,10 @@ public class Player : MonoBehaviour
     //Dizzy Stuff
     GameObject dizzyEffect;
 
+    //Other Stuff
+    bool passThroughPlatforms;
+    float gravityThreshold = 0.5f;
+
     // Use this for initialization
     void Start()
     {
@@ -140,6 +144,7 @@ public class Player : MonoBehaviour
             HandleRPSTimer();
             HandleHitStun();
             HandleInvincibility();
+            PlatformHandle();
             ColorHandler();
             if (canAttack)
             {
@@ -686,7 +691,7 @@ public class Player : MonoBehaviour
         if (below.collider != null)
         {
             //Debug.Log (below.collider.gameObject.name);
-            return below.transform.gameObject.tag == "Floor";
+            return below.transform.gameObject.tag == "Floor" && rb.velocity.y >= 0;
         }
         else
         {
@@ -791,6 +796,53 @@ public class Player : MonoBehaviour
    public bool Dizzy()
     {
         return PlayerManager.dizzyTotals[playerNum -1] == 0;
+    }
+
+    //Handles passing through soft platforms
+    void PlatformHandle()
+    {
+        if (hit)
+        {
+            passThroughPlatforms = true;
+        }
+        else if (rb.velocity.y > 0 && !grounded())
+        {
+            passThroughPlatforms = true;
+        }
+        else
+        {
+            if (Input.GetAxis("LeftStickY_P" + playerNum) > gravityThreshold && actionable)
+            {
+                passThroughPlatforms = true;
+            }
+            else
+            {
+                passThroughPlatforms = false;
+            }
+        }
+
+        if (passThroughPlatforms)
+        {
+            if (playerNum == 1)
+            {
+                Physics2D.IgnoreLayerCollision(11, 8, true);
+            }
+            if (playerNum == 2)
+            {
+                Physics2D.IgnoreLayerCollision(11, 12, true);
+            }
+        }
+        else
+        {
+            if (playerNum == 1)
+            {
+                Physics2D.IgnoreLayerCollision(11, 8, false);
+            }
+            if (playerNum == 2)
+            {
+                Physics2D.IgnoreLayerCollision(11, 12, false);
+            }
+        }
     }
 
     //Sends appropriate information to the animator.
@@ -915,6 +967,13 @@ public class Player : MonoBehaviour
     public void MakeFloaty()
     {
         rb.gravityScale = attackGrav;
+    }
+
+    public void DownAirDrop()
+    {
+        rb.gravityScale = normalGrav;
+        float dropSpeed = 20f;
+        rb.velocity = new Vector2(0, -1) * dropSpeed;
     }
 
     //Used to default out all variable values.
