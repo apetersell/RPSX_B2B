@@ -15,10 +15,12 @@ public class PlayerManager : MonoBehaviour {
     public int maxHealth = 10;
     public static float maxStateTime = 10;
     public static int maxDizzyTime = 8;
+    public static float maxGraceFrames = 300f;
     public static int[] healthTotals;
     public static int[] dizzyTotals;
     public static float[] dizzyTimers;
     public static float[] stateTimerTotals;
+    public static float[] graceTimers;
     public static Player[] players;
 
     // Use this for initialization
@@ -27,6 +29,7 @@ public class PlayerManager : MonoBehaviour {
         healthTotals = new int[numberOfPlayers];
         dizzyTotals = new int[numberOfPlayers];
         dizzyTimers = new float[numberOfPlayers];
+        graceTimers = new float[numberOfPlayers];
         players = new Player[numberOfPlayers];
         for (int i = 0; i < numberOfPlayers; i++)
         {
@@ -35,6 +38,7 @@ public class PlayerManager : MonoBehaviour {
         for (int i = 0; i < numberOfPlayers; i++)
         {
             healthTotals[i] = maxHealth;
+            graceTimers[i] = maxGraceFrames;
             dizzyTotals[i] = players[i].maxDizzyHits;
         }
     }
@@ -48,7 +52,9 @@ public class PlayerManager : MonoBehaviour {
             if (p.Dizzy())
             {
                 dizzyTimers[playerNum] += Time.deltaTime;
+
             }
+            graceTimers[playerNum]++;
         }
     }
 
@@ -87,5 +93,10 @@ public class PlayerManager : MonoBehaviour {
         {
             dizzyTotals[playerNum - 1] = maxDizzy;
         }
+    }
+
+    public static void StartGraceTimer(int playerNum)
+    {
+        graceTimers[playerNum -1] = 0;
     }
 }

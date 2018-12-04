@@ -93,9 +93,10 @@ public class Player : MonoBehaviour
 
     //Dizzy Stuff
     GameObject dizzyEffect;
+    GameObject burstButtons;
     public int maxDizzyHits = 8;
     public Attack burstComponent;
-    float undizzyMod = 5f;
+    float undizzyMod = 0.05f;
 
     //Other Stuff
     bool passThroughPlatforms;
@@ -128,14 +129,6 @@ public class Player : MonoBehaviour
         {
             AirDodges = maxAirDodges;
         }
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    actionable = false;
-        //    Vector2 testAngle = new Vector2(1, 0);
-        //    float testMagnitude = 10;
-        //    TakeHit(testAngle, testMagnitude);
-        //    Debug.Log("HIT");
-        //}
 
         if (debug)
         {
@@ -173,6 +166,14 @@ public class Player : MonoBehaviour
             Respawn();
         }
         dizzyEffect.SetActive(Dizzy());
+        if (Graced() || Dizzy())
+        {
+            burstButtons.SetActive(true);
+        }
+        else
+        {
+            burstButtons.SetActive(false);
+        }
     }
 
     void LateUpdate()
@@ -188,6 +189,9 @@ public class Player : MonoBehaviour
         frontOrigin = transform.GetChild(1);
         backOrigin = transform.GetChild(2);
         dizzyEffect = transform.GetChild(5).gameObject;
+        burstButtons = transform.GetChild(6).gameObject;
+        burstButtons.GetComponent<DizzyButtons>().myPlayer = this;
+        burstButtons.GetComponent<DizzyButtons>().playerNum = playerNum;
         normalGrav = rb.gravityScale;
         respawnPos = transform.position;
         // Gets a reference to every mesh.
@@ -215,8 +219,15 @@ public class Player : MonoBehaviour
         {
             Move();
             JumpControls();
-            DodgeControls();
-            //Determines if the run trigger is held
+            if (!Graced())
+            {
+                DodgeControls();
+            }
+            else 
+            {
+                canAttack = false;
+                BurstOptions();
+            }
             if (Input.GetAxis("RT_P" + playerNum) == 1)
             {
                 runButton = true;
@@ -238,7 +249,7 @@ public class Player : MonoBehaviour
         {
             if (Input.GetButtonDown("AButton_P" + playerNum))
             {
-                PlayerManager.dizzyTimers[playerNum - 1] += 5f;
+                PlayerManager.dizzyTimers[playerNum - 1] += undizzyMod;
             }
         }
         else 
@@ -475,6 +486,13 @@ public class Player : MonoBehaviour
             faded = RPSX.basicColorFaded;
             dark = RPSX.basicColorDark;
         }
+        if (rps != RPS_State.Basic)
+        {
+            GameObject rpsEffect = Instantiate(Resources.Load("Prefabs/RPS_Effect")) as GameObject;
+            rpsEffect.transform.position = transform.position;
+            rpsEffect.GetComponent<SpriteRenderer>().color = RPSX.StateColor(rps);
+            rpsEffect.GetComponent<RPSEffect>().state = rps;
+        }
 
         foreach (SpriteMeshInstance mesh in meshes)
         {
@@ -655,6 +673,12 @@ public class Player : MonoBehaviour
         return IFrames > 0;
 
     }
+
+    //Handles the gracePeriod after respawning 
+    public bool Graced()
+    {
+        return PlayerManager.graceTimers[playerNum - 1] < PlayerManager.maxGraceFrames;
+    }
     //Handles hitting walls while in hitstun
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -690,6 +714,8 @@ public class Player : MonoBehaviour
             respawnTimer = 0;
             hit = false;
             hitStun = 0;
+            IFrames = PlayerManager.maxGraceFrames;
+            PlayerManager.StartGraceTimer(playerNum);
         }
     }
 
@@ -742,6 +768,10 @@ public class Player : MonoBehaviour
     {
         IFrames = 0;
         PlayerManager.Undizzy(playerNum);
+        if (Graced())
+        {
+            PlayerManager.graceTimers[playerNum - 1] = PlayerManager.maxGraceFrames;
+        }
         ChangeRPSState(state);
         burstComponent.myState = currentState;
         burstComponent.playersHit.Clear();
@@ -1074,21 +1104,4 @@ public class Player : MonoBehaviour
         Vector3 backEndPoint = new Vector3 (backOrigin.position.x - backRaycastDistance * directionMod, backOrigin.position.y, backOrigin.position.z);
         Debug.DrawLine (backOrigin.transform.position, backEndPoint , Color.blue);
     }
-
-    //Temp effect to show when running
-    //  void AfterImageEffect()
-    //  {
-    //      afterImageTimerCurrent += Time.deltaTime;
-    //
-    //      if (afterImageTimerCurrent >= afterImageTimerMax) 
-    //      {
-    //          afterImageTimerCurrent = 0;
-    //          GameObject afterImage = Instantiate (Resources.Load ("Prefabs/AfterImage")) as GameObject;
-    ////            SpriteRenderer afterImageSR = afterImage.GetComponent<SpriteRenderer> ();
-    //          afterImage.transform.position = this.transform.position;
-    ////            afterImageSR.sprite = sr.sprite;
-    ////            afterImageSR.flipX = sr.flipX;
-    ////            afterImageSR.color = new Color (sr.color.r, sr.color.g, sr.color.b, 0.75f);
-    //      }
-    //  }
 }

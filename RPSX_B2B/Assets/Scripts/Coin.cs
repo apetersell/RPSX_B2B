@@ -40,7 +40,7 @@ public class Coin : MonoBehaviour {
         if (coll.gameObject.GetComponent<Player>() != null)
         {
             Player player = coll.gameObject.GetComponent<Player>();
-            if (!player.Dizzy())
+            if (!player.Dizzy() && !player.Graced())
             {
                 player.ChangeRPSState(myState);
             }
