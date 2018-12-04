@@ -107,7 +107,7 @@ public class RPSX : MonoBehaviour {
 
 	}
 
-	public static string Input (float x, float y, int dir, bool grounded, bool running, bool crouching, bool leaping, bool strong)
+	public static string Input (float x, float y, bool grounded, bool running, bool leaping, bool strong)
 	{
 		string result = null; 
 		if (grounded) 
@@ -142,6 +142,10 @@ public class RPSX : MonoBehaviour {
                     if ((Mathf.Abs(x) < Mathf.Abs(y)) && y < 0)
                     {
                         result = "GroundUp";
+                    }
+                    if ((Mathf.Abs(x) < Mathf.Abs(y)) && y > 0)
+                    {
+                        result = "GroundDown";
                     }
                 }
 			} 
@@ -238,4 +242,13 @@ public class RPSX : MonoBehaviour {
         return result;
     }
 
+    public static Vector2 RadianToVector2(float radian)
+    {
+        return new Vector2(Mathf.Cos(radian), Mathf.Sin(radian));
+    }
+
+    public static Vector2 DegreeToVector2(float degree)
+    {
+        return RadianToVector2(degree * Mathf.Deg2Rad);
+    }
 }

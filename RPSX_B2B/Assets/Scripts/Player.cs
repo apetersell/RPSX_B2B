@@ -11,23 +11,22 @@ public class Player : MonoBehaviour
     public bool debug;
 
     public int playerNum;
+    bool actionable;
+    Rigidbody2D rb;
+    Animator anim;
+    Vector2 previousVelocity;
+    public GameObject meshSkeleton;
+
+    //Move Stuff
     public float walkSpeed;
     public float runSpeed;
     public float jumpSpeed;
     float minWalkInput = 0.3f;
     float minRunInput = 0.5f;
     bool runButton;
-    bool actionable;
-    Rigidbody2D rb;
-    Animator anim;
     public float runStopFrames;
-    public bool touchingGround;
     public int directionMod;
     bool crouching;
-    bool canAttack;
-    Vector2 previousVelocity;
-
-    public GameObject meshSkeleton;
 
     //Raycast stuff
     Transform footOrigin;
@@ -44,6 +43,7 @@ public class Player : MonoBehaviour
     int maxNormals = 3;
     public float normalGrav;
     public float attackGrav = 0;
+    bool canAttack;
 
     //JumpStuff
     float shortHopFrames = 3;
@@ -77,7 +77,6 @@ public class Player : MonoBehaviour
     float respawnTimer;
     Vector3 respawnPos;
     float wallBounceIFrames = 30f;
-    public int maxDizzyHits = 8;
 
     //Parry stuff
     float parryStunDuration = 20;
@@ -94,10 +93,14 @@ public class Player : MonoBehaviour
 
     //Dizzy Stuff
     GameObject dizzyEffect;
+    public int maxDizzyHits = 8;
+    public Attack burstComponent;
+    float undizzyMod = 5f;
 
     //Other Stuff
     bool passThroughPlatforms;
     float gravityThreshold = 0.5f;
+
 
     // Use this for initialization
     void Start()
@@ -223,14 +226,59 @@ public class Player : MonoBehaviour
                 runButton = false;
             }
         }
+        else
+        {
+            DizzyControls();
+        }
+    }
+
+    void DizzyControls()
+    {
+        if (PlayerManager.dizzyTimers[playerNum - 1] < PlayerManager.maxDizzyTime)
+        {
+            if (Input.GetButtonDown("AButton_P" + playerNum))
+            {
+                PlayerManager.dizzyTimers[playerNum - 1] += 5f;
+            }
+        }
+        else 
+        {
+            BurstOptions();
+        }
+    }
+
+    void BurstOptions()
+    {
+        if (Input.GetButtonDown("XButton_P" + playerNum))
+        {
+            Burst(RPS_State.Rock);
+        }
+        if (Input.GetButtonDown("YButton_P" + playerNum))
+        {
+            Burst(RPS_State.Paper);
+        }
+        if (Input.GetButtonDown("BButton_P" + playerNum))
+        {
+            Burst(RPS_State.Scissors);
+        }
     }
 
     //Controls Player Movement
     void Move()
     {
         //Finds stick input
-        float stickInput = Input.GetAxis("LeftStickX_P" + playerNum);
-        float stickInputAbs = Mathf.Abs(stickInput);
+        float stickInputX = Input.GetAxis("LeftStickX_P" + playerNum);
+        float stickInputY = Input.GetAxis("LeftStickY_P" + playerNum);
+        float stickInputAbs = Mathf.Abs(stickInputX);
+
+        if (Mathf.Abs(stickInputX) < minWalkInput && stickInputY > 0 && grounded() && !running)
+        {
+            crouching = true;
+        }
+        else 
+        {
+            crouching = false;
+        }
 
         if (running)
         {
@@ -247,7 +295,7 @@ public class Player : MonoBehaviour
         //Determines movement properties on the ground. Changes values based on whether or not the run button is held.
         if (leaping)
         {
-            float horiontalInfluence = stickInput * leapInfluenceMod;
+            float horiontalInfluence = stickInputX * leapInfluenceMod;
             float modX = rb.velocity.x;
             modX += horiontalInfluence;
             rb.velocity = new Vector2(modX, rb.velocity.y);
@@ -258,7 +306,7 @@ public class Player : MonoBehaviour
             {
                 if (stickInputAbs > minRunInput)
                 {
-                    rb.velocity = new Vector2(stickInput * runSpeed, rb.velocity.y);
+                    rb.velocity = new Vector2(stickInputX * runSpeed, rb.velocity.y);
                     running = true;
                     walking = false;
                 }
@@ -267,7 +315,7 @@ public class Player : MonoBehaviour
             {
                 if (stickInputAbs > minWalkInput)
                 {
-                    rb.velocity = new Vector2(stickInput * walkSpeed, rb.velocity.y);
+                    rb.velocity = new Vector2(stickInputX * walkSpeed, rb.velocity.y);
                     walking = true;
                     running = false;
                 }
@@ -280,11 +328,11 @@ public class Player : MonoBehaviour
         }
 
         //Makes sure character is facing the right way
-        if (stickInput > minWalkInput && transform.localScale.x < 0 && !leaping)
+        if (stickInputX > minWalkInput && transform.localScale.x < 0 && !leaping)
         {
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
         }
-        if (stickInput < minWalkInput * -1 && transform.localScale.x > 0 && !leaping)
+        if (stickInputX < minWalkInput * -1 && transform.localScale.x > 0 && !leaping)
         {
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
         }
@@ -356,7 +404,7 @@ public class Player : MonoBehaviour
                 rb.gravityScale = attackGrav;
             }
 
-            string attackInput = RPSX.Input(stickInputX, stickInputY, directionMod, grounded(), running, crouching, leaping, strong);
+            string attackInput = RPSX.Input(stickInputX, stickInputY, grounded(), running, leaping, strong);
             Attack hitbox = GetComponent<AttackMoveset>().GetAttack(attackInput);
             hitbox.stickInputX = Mathf.Abs(stickInputX);
             hitbox.stickInputY = stickInputY * -1;
@@ -467,7 +515,7 @@ public class Player : MonoBehaviour
     }
 
     //Called when the player is hit by an attack.
-    public void TakeHit (Vector2 angle, float magnitude)
+    public void TakeHit (Vector2 angle, float magnitude, RPS_Result result)
     {
         hit = true;
         anim.SetTrigger("init_Hit");
@@ -490,7 +538,14 @@ public class Player : MonoBehaviour
         }
         rb.velocity = knockback;
         rb.gravityScale = (normalGrav/2);
-        Camera.main.GetComponent<ScreenShaker>().shake(10);
+        if (result == RPS_Result.Loss)
+        {
+            Camera.main.GetComponent<ScreenShaker>().shake(20);
+        }
+        else
+        {
+            Camera.main.GetComponent<ScreenShaker>().shake(10);
+        }
         hitStun = magnitude * 0.05f;
         rb.drag = 3;
     }
@@ -683,6 +738,19 @@ public class Player : MonoBehaviour
         while (currentFrame <= shortHopFrames);
     }
 
+    void Burst (RPS_State state)
+    {
+        IFrames = 0;
+        PlayerManager.Undizzy(playerNum);
+        ChangeRPSState(state);
+        burstComponent.myState = currentState;
+        burstComponent.playersHit.Clear();
+        burstComponent.owner = this;
+        GameObject parrySpark = Instantiate(Resources.Load("Prefabs/ParrySpark")) as GameObject;
+        parrySpark.transform.position = transform.position;
+        parrySpark.GetComponent<SpriteRenderer>().color = RPSX.StateColor(currentState);
+        anim.SetTrigger("Burst");
+    }
 
     //Keeps track of if the player is touching the ground or not
     bool grounded()
@@ -858,6 +926,7 @@ public class Player : MonoBehaviour
         anim.SetBool("HoldingBack", HoldingBack());
         anim.SetBool("Staggered", Staggered);
         anim.SetBool("Dizzy", Dizzy());
+        anim.SetBool("Crouching", crouching);
     }
 
     //Animation Events
@@ -967,6 +1036,12 @@ public class Player : MonoBehaviour
     public void MakeFloaty()
     {
         rb.gravityScale = attackGrav;
+    }
+
+    public void MakeStatic()
+    {
+        stopAllMomentum();
+        rb.gravityScale = 0;
     }
 
     public void DownAirDrop()

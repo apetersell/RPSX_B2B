@@ -48,13 +48,15 @@ public class PlayerManager : MonoBehaviour {
             if (p.Dizzy())
             {
                 dizzyTimers[playerNum] += Time.deltaTime;
-                if (dizzyTimers[playerNum] >= maxDizzyTime)
-                {
-                    dizzyTotals[playerNum] = players[playerNum].maxDizzyHits;
-                    dizzyTimers[playerNum] = 0;
-                }
             }
         }
+    }
+
+    public static void Undizzy(int playerNum)
+    {
+        int i = playerNum - 1;
+        dizzyTotals[i] = players[i].maxDizzyHits;
+        dizzyTimers[i] = 0;
     }
 
     public static void TakeDamage (int playerNum)

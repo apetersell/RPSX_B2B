@@ -43,7 +43,7 @@ public class Attack : MonoBehaviour {
         }
     }
 
-    void hitPlayer (Player player)
+    public virtual void hitPlayer (Player player)
     {
         float effectiveKB = baseKnockback;
         RPS_Result result = RPSX.determineWinner(myState, player.currentState);
@@ -64,7 +64,7 @@ public class Attack : MonoBehaviour {
         {
             if (!player.Invincible())
             {
-                player.TakeHit(effectiveKBA, effectiveKB);
+                player.TakeHit(effectiveKBA, effectiveKB, result);
             }
         }
         else 

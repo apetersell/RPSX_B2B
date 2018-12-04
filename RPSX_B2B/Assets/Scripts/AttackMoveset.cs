@@ -6,10 +6,12 @@ public class AttackMoveset : MonoBehaviour {
 
     GameObject hitBoxes;
     Attack[] attacks;
+    Player player;
 
 	// Use this for initialization
 	void Start () 
     {
+        player = GetComponent<Player>();
         hitBoxes = transform.GetChild(4).gameObject;
         attacks = new Attack[hitBoxes.transform.childCount];
         for (int i = 0; i < attacks.Length; i++)
@@ -17,6 +19,7 @@ public class AttackMoveset : MonoBehaviour {
             Attack attack = hitBoxes.transform.GetChild(i).gameObject.GetComponent<Attack>();
             attacks[i] = attack;
         }
+        player.burstComponent = attacks[11];
     }
 	
 	// Update is called once per frame
@@ -60,6 +63,9 @@ public class AttackMoveset : MonoBehaviour {
                 break;
             case "AirDown":
                 attack = attacks[9];
+                break;
+            case "GroundDown":
+                attack = attacks[10];
                 break;
         }
 
