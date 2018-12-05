@@ -77,6 +77,7 @@ public class Player : MonoBehaviour
     float respawnTimer;
     Vector3 respawnPos;
     float wallBounceIFrames = 30f;
+    float DIModifier = 0.15f;
 
     //Parry stuff
     float parryStunDuration = 20;
@@ -646,6 +647,10 @@ public class Player : MonoBehaviour
         if (hitStun > 0)
         {
             hitStun -= Time.deltaTime;
+            if (!Dizzy())
+            {
+                DirectionalInfluence();
+            }
         }
         if (hitStun <= 0 && hit)
         {
@@ -764,6 +769,16 @@ public class Player : MonoBehaviour
         while (currentFrame <= shortHopFrames);
     }
 
+    //Allows players to DI when hit
+    void DirectionalInfluence()
+    {
+        float DIX = Input.GetAxis("LeftStickX_P" + playerNum) * DIModifier;
+        float DIY = -Input.GetAxis("LeftStickY_P" + playerNum) * DIModifier;
+        Vector2 DI = new Vector2(DIX, DIY);
+        rb.velocity += DI;
+    }
+
+    //Functionality for bursts
     void Burst (RPS_State state)
     {
         IFrames = 0;

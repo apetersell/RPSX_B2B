@@ -6,11 +6,18 @@ public class Coin : MonoBehaviour {
 
     public RPS_State myState;
     public Sprite[] sprites;
-    SpriteRenderer sr; 
+    public TokenManager manager;
+    SpriteRenderer sr;
+    Animator anim;
+    bool taken;
+    float takenTimer;
+    float timeAfterTaken = 1.5f;
+
 
 	// Use this for initialization
 	void Start () 
     {
+        anim = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
         if (myState == RPS_State.Rock)
         {
@@ -32,7 +39,14 @@ public class Coin : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
-		
+        if(taken)
+        {
+            takenTimer += Time.deltaTime;
+            if (takenTimer >= timeAfterTaken)
+            {
+                Die();
+            }
+        }
 	}
 
     void OnTriggerEnter2D(Collider2D coll)
@@ -43,7 +57,15 @@ public class Coin : MonoBehaviour {
             if (!player.Dizzy() && !player.Graced())
             {
                 player.ChangeRPSState(myState);
+                anim.SetTrigger("Get");
+                taken = true;
             }
         }
+    }
+
+    void Die ()
+    {
+        manager.SpawnToken(myState);
+        Destroy(this.gameObject);
     }
 }
