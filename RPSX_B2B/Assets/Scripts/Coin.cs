@@ -12,6 +12,7 @@ public class Coin : MonoBehaviour {
     bool taken;
     float takenTimer;
     float timeAfterTaken = 1.5f;
+    public int mySlot;
 
 
 	// Use this for initialization
@@ -65,7 +66,14 @@ public class Coin : MonoBehaviour {
 
     void Die ()
     {
-        manager.SpawnToken(myState);
+        manager.SpawnToken(myState, mySlot);
         Destroy(this.gameObject);
+    }
+
+    public void Shine ()
+    {
+        GameObject parrySpark = Instantiate(Resources.Load("Prefabs/ParrySpark")) as GameObject;
+        parrySpark.transform.position = transform.position;
+        parrySpark.GetComponent<SpriteRenderer>().color = RPSX.StateColor(myState);
     }
 }
