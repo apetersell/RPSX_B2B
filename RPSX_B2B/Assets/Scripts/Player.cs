@@ -72,7 +72,7 @@ public class Player : MonoBehaviour
     //Getting Hit/Dying Stuff
     int BurstParticles = 30;
     bool dead;
-    bool hit;
+    public bool hit;
     float hitStun;
     float respawnTimer;
     Vector3 respawnPos;
