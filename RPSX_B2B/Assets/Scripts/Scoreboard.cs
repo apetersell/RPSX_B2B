@@ -66,7 +66,8 @@ public class Scoreboard : MonoBehaviour
             stateTimers[i] = GameObject.Find("StateTimer_P" + (i + 1)).GetComponent<Image>();
             portraits[i] = GameObject.Find("PortraitFace_P" + (i + 1)).GetComponent<Image>();
             faces[i] = GameObject.Find("PortraitFace_P" + (i + 1)).GetComponent<SpriteCycler>();
-            screenCracks[i] = GameObject.Find("ScreenCracks_P" + (i + 1)).GetComponent<SpriteCycler>();
+            screenCracks[i] = GameObject.Find("ScreenCrack_P" + (i + 1)).GetComponent<SpriteCycler>();
+            portraitBG[i] = GameObject.Find("PortraitBG_P" + (i + 1)).GetComponent<Image>();
             hearts[i] = GameObject.Find("Heart_P" + (i + 1)).GetComponent<Image>();
             StateBG[i] = GameObject.Find("StateBG_P" + (i + 1)).GetComponent<Image>();
             dizzyMeters[i] = GameObject.Find("DizzyMeter_P" + (i + 1)).GetComponent<Image>();
@@ -148,6 +149,7 @@ public class Scoreboard : MonoBehaviour
             stateTimer.color = bright[playerNum];
         }
         stateBG.color = faded[playerNum];
+        portraitBG[playerNum].color = faded[playerNum];
         stateTimer.color = bright[playerNum];
         portrait.color = normal[playerNum];
         heart.color = normal[playerNum];

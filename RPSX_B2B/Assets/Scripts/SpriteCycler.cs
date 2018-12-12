@@ -7,11 +7,13 @@ public class SpriteCycler : MonoBehaviour {
 
     public Sprite[] sprites;
     public int index;
+    Animator anim;
     Image img;
 
 	// Use this for initialization
 	void Start () 
     {
+        anim = GetComponent<Animator>();
         img = GetComponent<Image>();
 	}
 	
@@ -19,5 +21,9 @@ public class SpriteCycler : MonoBehaviour {
 	void Update () 
     {
         img.sprite = sprites[index];
+        if (anim != null)
+        {
+            anim.SetInteger("Index", index);
+        }
 	}
 }
