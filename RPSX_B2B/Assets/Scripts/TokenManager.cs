@@ -31,16 +31,18 @@ public class TokenManager : MonoBehaviour {
 
     public void SpawnToken(RPS_State state, int previousSlot)
     {
-        if (previousSlot < possibleTokenLocations.Length + 1)
-        {
-            availableSlots.Add(previousSlot);
-        }
         GameObject newToken = Instantiate(Resources.Load("Prefabs/Token")) as GameObject;
         Coin coin = newToken.GetComponent<Coin>();
         coin.myState = state;
         coin.manager = this;
         int rando = Random.Range(0, availableSlots.Count);
-        availableSlots.Remove(rando);
-        newToken.transform.position = possibleTokenLocations[rando]; 
+        int locationIndex = availableSlots[rando];
+        coin.mySlot = locationIndex;
+        availableSlots.Remove(locationIndex);
+        newToken.transform.position = possibleTokenLocations[locationIndex];
+        if (previousSlot < possibleTokenLocations.Length + 1)
+        {
+            availableSlots.Add(previousSlot);
+        }
     }
 }
