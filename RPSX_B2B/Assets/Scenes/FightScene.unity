@@ -739,6 +739,9 @@ MonoBehaviour:
   KBInfluenceX: 0
   KBInfluenceY: 0
   dizzyDamage: 0
+  swingSound: {fileID: 0}
+  normalHitSound: {fileID: 0}
+  superHitSound: {fileID: 0}
 --- !u!58 &82236580
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -3369,6 +3372,9 @@ MonoBehaviour:
   KBInfluenceX: 1
   KBInfluenceY: 1
   dizzyDamage: 1
+  swingSound: {fileID: 8300000, guid: 410f5f370de86264fa72d1b431d47496, type: 3}
+  normalHitSound: {fileID: 8300000, guid: e09e364b0d2c9a745bf11918c0f2c816, type: 3}
+  superHitSound: {fileID: 8300000, guid: 9db471d00bfbf43af9aa3badeb9bf40d, type: 3}
 --- !u!61 &281785963
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3486,7 +3492,7 @@ MonoBehaviour:
   m_Length: 0.42
   m_Child: {fileID: 0}
   m_ChildTransform: {fileID: 0}
-  m_AttachedIK: {fileID: 0}
+  m_AttachedIK: {fileID: 907392170}
 --- !u!1 &298040357
 GameObject:
   m_ObjectHideFlags: 0
@@ -3813,12 +3819,12 @@ MonoBehaviour:
     m_SolverPoses:
     - m_Bone: {fileID: 0}
       m_BoneTransform: {fileID: 1289595831}
-      solverPosition: {x: 0.00000071452394, y: 0.0000007342311, z: 0}
-      solverRotation: {x: 0, y: 0, z: 0.54591703, w: 0.837839}
+      solverPosition: {x: 0.0000009294928, y: -0.0000010242404, z: 0}
+      solverRotation: {x: 0, y: 0, z: 0.7567589, w: 0.65369403}
       defaultLocalRotation: {x: 0, y: 0, z: 0.9971558, w: -0.07536783}
     m_Weight: 1
     m_RestoreDefaultPose: 1
-    targetPosition: {x: -2.264301, y: -4.518532, z: -0.1106563}
+    targetPosition: {x: -1.9690667, y: -4.124024, z: -0.1106563}
     iterations: 10
     damping: 0.8
 --- !u!1 &314315067
@@ -4119,7 +4125,7 @@ GameObject:
   m_Component:
   - component: {fileID: 340591403}
   - component: {fileID: 340591404}
-  m_Layer: 12
+  m_Layer: 14
   m_Name: LedgeDetector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4293,6 +4299,9 @@ MonoBehaviour:
   KBInfluenceX: 1
   KBInfluenceY: 1
   dizzyDamage: 2
+  swingSound: {fileID: 8300000, guid: 85a9038d4d9c2ad40a1e13910f550bac, type: 3}
+  normalHitSound: {fileID: 8300000, guid: 4401fc56e38ad2e42bab3d72ef33ec76, type: 3}
+  superHitSound: {fileID: 8300000, guid: 2e7099f9e3f82469581b199114fb2822, type: 3}
 --- !u!61 &349378797
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4548,6 +4557,9 @@ MonoBehaviour:
   KBInfluenceX: 1
   KBInfluenceY: 1
   dizzyDamage: 2
+  swingSound: {fileID: 8300000, guid: 85a9038d4d9c2ad40a1e13910f550bac, type: 3}
+  normalHitSound: {fileID: 8300000, guid: 4401fc56e38ad2e42bab3d72ef33ec76, type: 3}
+  superHitSound: {fileID: 8300000, guid: 2e7099f9e3f82469581b199114fb2822, type: 3}
 --- !u!61 &382545789
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4876,12 +4888,12 @@ MonoBehaviour:
     m_SolverPoses:
     - m_Bone: {fileID: 0}
       m_BoneTransform: {fileID: 765581537}
-      solverPosition: {x: -0.0000003406587, y: 0.0000002008625, z: 0}
-      solverRotation: {x: 0, y: 0, z: 0.30631065, w: 0.95193166}
+      solverPosition: {x: 0.00000033408475, y: 0.00000008295706, z: 0}
+      solverRotation: {x: 0, y: 0, z: -0.0051645315, w: 0.99998677}
       defaultLocalRotation: {x: 0, y: 0, z: -0.8837932, w: 0.46787786}
     m_Weight: 1
     m_RestoreDefaultPose: 1
-    targetPosition: {x: -1.7783351, y: -3.5596972, z: -0.1106563}
+    targetPosition: {x: -2.2059283, y: -3.2491796, z: -0.1106563}
     iterations: 10
     damping: 0.8
 --- !u!4 &396708536
@@ -5469,7 +5481,7 @@ MonoBehaviour:
   debug: 1
   playerNum: 1
   meshSkeleton: {fileID: 0}
-  walkSpeed: 2.6
+  walkSpeed: 4
   runSpeed: 7
   jumpSpeed: 16
   runStopFrames: 10
@@ -5492,6 +5504,9 @@ MonoBehaviour:
   airDodgeSpeed: 16
   maxDizzyHits: 7
   burstComponent: {fileID: 0}
+  impactAudio: {fileID: 0}
+  actionAudio: {fileID: 0}
+  loopingAudio: {fileID: 0}
 --- !u!50 &441066544
 Rigidbody2D:
   serializedVersion: 4
@@ -6310,7 +6325,7 @@ MonoBehaviour:
   debug: 1
   playerNum: 2
   meshSkeleton: {fileID: 0}
-  walkSpeed: 2.6
+  walkSpeed: 4
   runSpeed: 7
   jumpSpeed: 16
   runStopFrames: 10
@@ -6333,6 +6348,9 @@ MonoBehaviour:
   airDodgeSpeed: 16
   maxDizzyHits: 7
   burstComponent: {fileID: 0}
+  impactAudio: {fileID: 0}
+  actionAudio: {fileID: 0}
+  loopingAudio: {fileID: 0}
 --- !u!50 &495497994
 Rigidbody2D:
   serializedVersion: 4
@@ -6498,6 +6516,9 @@ MonoBehaviour:
   KBInfluenceX: 1
   KBInfluenceY: 1
   dizzyDamage: 2
+  swingSound: {fileID: 8300000, guid: 85a9038d4d9c2ad40a1e13910f550bac, type: 3}
+  normalHitSound: {fileID: 8300000, guid: 4401fc56e38ad2e42bab3d72ef33ec76, type: 3}
+  superHitSound: {fileID: 8300000, guid: 2e7099f9e3f82469581b199114fb2822, type: 3}
 --- !u!61 &497374264
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -7140,6 +7161,9 @@ MonoBehaviour:
   KBInfluenceX: 0
   KBInfluenceY: 0
   dizzyDamage: 0
+  swingSound: {fileID: 0}
+  normalHitSound: {fileID: 0}
+  superHitSound: {fileID: 0}
 --- !u!1 &544623926
 GameObject:
   m_ObjectHideFlags: 0
@@ -8057,6 +8081,9 @@ MonoBehaviour:
   KBInfluenceX: 1
   KBInfluenceY: 1
   dizzyDamage: 2
+  swingSound: {fileID: 8300000, guid: 85a9038d4d9c2ad40a1e13910f550bac, type: 3}
+  normalHitSound: {fileID: 8300000, guid: 4401fc56e38ad2e42bab3d72ef33ec76, type: 3}
+  superHitSound: {fileID: 8300000, guid: 2e7099f9e3f82469581b199114fb2822, type: 3}
 --- !u!61 &648188742
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -8575,7 +8602,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.5566038, g: 0.5566038, b: 0.5566038, a: 1}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
@@ -8822,7 +8849,7 @@ MonoBehaviour:
   m_Length: 0.84
   m_Child: {fileID: 0}
   m_ChildTransform: {fileID: 0}
-  m_AttachedIK: {fileID: 0}
+  m_AttachedIK: {fileID: 1452604623}
 --- !u!1 &727243112
 GameObject:
   m_ObjectHideFlags: 0
@@ -9033,7 +9060,7 @@ MonoBehaviour:
   m_Length: 1.41
   m_Child: {fileID: 0}
   m_ChildTransform: {fileID: 0}
-  m_AttachedIK: {fileID: 0}
+  m_AttachedIK: {fileID: 396708535}
 --- !u!1 &779575797
 GameObject:
   m_ObjectHideFlags: 0
@@ -9485,6 +9512,9 @@ MonoBehaviour:
   KBInfluenceX: 1
   KBInfluenceY: 1
   dizzyDamage: 2
+  swingSound: {fileID: 8300000, guid: 85a9038d4d9c2ad40a1e13910f550bac, type: 3}
+  normalHitSound: {fileID: 8300000, guid: 4401fc56e38ad2e42bab3d72ef33ec76, type: 3}
+  superHitSound: {fileID: 8300000, guid: 2e7099f9e3f82469581b199114fb2822, type: 3}
 --- !u!61 &818323163
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -10028,12 +10058,12 @@ MonoBehaviour:
     m_SolverPoses:
     - m_Bone: {fileID: 0}
       m_BoneTransform: {fileID: 287459692}
-      solverPosition: {x: -0.00000009369231, y: -0.0000006849215, z: 0}
-      solverRotation: {x: 0, y: 0, z: -0.68177176, w: 0.73156506}
+      solverPosition: {x: 0.0000004858154, y: -0.00000038262237, z: 0}
+      solverRotation: {x: 0, y: 0, z: -0.06677449, w: -0.9977681}
       defaultLocalRotation: {x: 0, y: 0, z: -0.89964753, w: -0.43661702}
     m_Weight: 1
     m_RestoreDefaultPose: 1
-    targetPosition: {x: -2.8839464, y: -3.654775, z: -0.1106563}
+    targetPosition: {x: -2.425052, y: -3.3224247, z: -0.1106563}
     iterations: 10
     damping: 0.8
 --- !u!4 &907392171
@@ -12363,6 +12393,9 @@ MonoBehaviour:
   KBInfluenceX: 1
   KBInfluenceY: 0
   dizzyDamage: 2
+  swingSound: {fileID: 8300000, guid: 85a9038d4d9c2ad40a1e13910f550bac, type: 3}
+  normalHitSound: {fileID: 8300000, guid: 4401fc56e38ad2e42bab3d72ef33ec76, type: 3}
+  superHitSound: {fileID: 8300000, guid: 2e7099f9e3f82469581b199114fb2822, type: 3}
 --- !u!61 &1111484327
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -13503,6 +13536,9 @@ MonoBehaviour:
   KBInfluenceX: 0
   KBInfluenceY: 2
   dizzyDamage: 1
+  swingSound: {fileID: 8300000, guid: 410f5f370de86264fa72d1b431d47496, type: 3}
+  normalHitSound: {fileID: 8300000, guid: e09e364b0d2c9a745bf11918c0f2c816, type: 3}
+  superHitSound: {fileID: 8300000, guid: 9db471d00bfbf43af9aa3badeb9bf40d, type: 3}
 --- !u!1 &1217171356
 GameObject:
   m_ObjectHideFlags: 0
@@ -14239,7 +14275,7 @@ MonoBehaviour:
   m_Length: 0.85
   m_Child: {fileID: 0}
   m_ChildTransform: {fileID: 0}
-  m_AttachedIK: {fileID: 0}
+  m_AttachedIK: {fileID: 311173510}
 --- !u!1 &1292229941
 GameObject:
   m_ObjectHideFlags: 0
@@ -14423,6 +14459,9 @@ MonoBehaviour:
   KBInfluenceX: 0
   KBInfluenceY: 0
   dizzyDamage: 1
+  swingSound: {fileID: 8300000, guid: 410f5f370de86264fa72d1b431d47496, type: 3}
+  normalHitSound: {fileID: 8300000, guid: e09e364b0d2c9a745bf11918c0f2c816, type: 3}
+  superHitSound: {fileID: 8300000, guid: 9db471d00bfbf43af9aa3badeb9bf40d, type: 3}
 --- !u!61 &1323368214
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -14632,6 +14671,9 @@ MonoBehaviour:
   KBInfluenceX: 1
   KBInfluenceY: 1
   dizzyDamage: 1
+  swingSound: {fileID: 8300000, guid: 410f5f370de86264fa72d1b431d47496, type: 3}
+  normalHitSound: {fileID: 8300000, guid: e09e364b0d2c9a745bf11918c0f2c816, type: 3}
+  superHitSound: {fileID: 8300000, guid: 9db471d00bfbf43af9aa3badeb9bf40d, type: 3}
 --- !u!61 &1334828719
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -15045,6 +15087,9 @@ MonoBehaviour:
   KBInfluenceX: 1
   KBInfluenceY: 1
   dizzyDamage: 1
+  swingSound: {fileID: 8300000, guid: 410f5f370de86264fa72d1b431d47496, type: 3}
+  normalHitSound: {fileID: 8300000, guid: e09e364b0d2c9a745bf11918c0f2c816, type: 3}
+  superHitSound: {fileID: 8300000, guid: 9db471d00bfbf43af9aa3badeb9bf40d, type: 3}
 --- !u!61 &1379341339
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -16407,12 +16452,12 @@ MonoBehaviour:
     m_SolverPoses:
     - m_Bone: {fileID: 0}
       m_BoneTransform: {fileID: 720573571}
-      solverPosition: {x: -0.00000016983424, y: -0.00000041519195, z: 0}
-      solverRotation: {x: 0, y: 0, z: -0.4662514, w: -0.8846524}
+      solverPosition: {x: -0.00000004473098, y: -0.00000043882324, z: 0}
+      solverRotation: {x: 0, y: 0, z: -0.17931569, w: -0.9837917}
       defaultLocalRotation: {x: 0, y: 0, z: -0.99630105, w: -0.08593203}
     m_Weight: 1
     m_RestoreDefaultPose: 1
-    targetPosition: {x: -2.5596192, y: -4.505101, z: -0.1106563}
+    targetPosition: {x: -2.1430342, y: -4.2223086, z: -0.1106563}
     iterations: 10
     damping: 0.8
 --- !u!4 &1452604624
@@ -17295,6 +17340,9 @@ MonoBehaviour:
   KBInfluenceX: 1
   KBInfluenceY: 1
   dizzyDamage: 2
+  swingSound: {fileID: 8300000, guid: 85a9038d4d9c2ad40a1e13910f550bac, type: 3}
+  normalHitSound: {fileID: 8300000, guid: 4401fc56e38ad2e42bab3d72ef33ec76, type: 3}
+  superHitSound: {fileID: 8300000, guid: 2e7099f9e3f82469581b199114fb2822, type: 3}
 --- !u!61 &1487016805
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -17668,6 +17716,8 @@ GameObject:
   - component: {fileID: 1536817999}
   - component: {fileID: 1536818000}
   - component: {fileID: 1536818001}
+  - component: {fileID: 1536818002}
+  - component: {fileID: 1536818003}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -17710,7 +17760,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 105a3d264dabc4380a0b65b5d9d2e1ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 10
+  maxHealth: 3
 --- !u!114 &1536818000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17784,6 +17834,123 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   availableSlots: 
+--- !u!114 &1536818002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1536817996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbf971fe70a8a4930a4beae784885841, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  KOSound: {fileID: 8300000, guid: 6f087d20c265a44d2890bf718e34ab6e, type: 3}
+  WallBounce: {fileID: 8300000, guid: 5c2d033effbd54db0881f0e4a6ab031c, type: 3}
+  ParrySound: {fileID: 8300000, guid: 640f955161b884c328da6a0ff6234aff, type: 3}
+  DizzySound: {fileID: 8300000, guid: 13e493d9356864d28bbf38b7ae159d03, type: 3}
+  StateChangeSound: {fileID: 8300000, guid: 7e48dac3927a94bd5935ff21641425bb, type: 3}
+  BurstSound: {fileID: 8300000, guid: 72e5a92fc9f7b4043843bdaaa630cc08, type: 3}
+  NormalOut: {fileID: 8300000, guid: 101cd206796544e62872e519b112a7ab, type: 3}
+  CoinDink: {fileID: 8300000, guid: a9b0085a3dca64c9cb515fa1a005769f, type: 3}
+  TokenGet: {fileID: 8300000, guid: 922f75c87e75d4191b985b2db64c0ceb, type: 3}
+  DeathSound: {fileID: 8300000, guid: 85e6846016f494bf8b00a901e4e2079b, type: 3}
+  DodgeSound: {fileID: 8300000, guid: 9f870614b03fb42b7be8b808689e1fd5, type: 3}
+--- !u!82 &1536818003
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1536817996}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1536838832
 GameObject:
   m_ObjectHideFlags: 0
@@ -18181,6 +18348,9 @@ MonoBehaviour:
   KBInfluenceX: 1
   KBInfluenceY: 1
   dizzyDamage: 1
+  swingSound: {fileID: 8300000, guid: 410f5f370de86264fa72d1b431d47496, type: 3}
+  normalHitSound: {fileID: 8300000, guid: e09e364b0d2c9a745bf11918c0f2c816, type: 3}
+  superHitSound: {fileID: 8300000, guid: 9db471d00bfbf43af9aa3badeb9bf40d, type: 3}
 --- !u!61 &1560442119
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -18221,7 +18391,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1561044181
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -18502,6 +18672,9 @@ MonoBehaviour:
   KBInfluenceX: 1
   KBInfluenceY: 1
   dizzyDamage: 2
+  swingSound: {fileID: 8300000, guid: 85a9038d4d9c2ad40a1e13910f550bac, type: 3}
+  normalHitSound: {fileID: 8300000, guid: 4401fc56e38ad2e42bab3d72ef33ec76, type: 3}
+  superHitSound: {fileID: 8300000, guid: 2e7099f9e3f82469581b199114fb2822, type: 3}
 --- !u!61 &1580155647
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -18985,6 +19158,9 @@ MonoBehaviour:
   KBInfluenceX: 1
   KBInfluenceY: 1
   dizzyDamage: 1
+  swingSound: {fileID: 8300000, guid: 410f5f370de86264fa72d1b431d47496, type: 3}
+  normalHitSound: {fileID: 8300000, guid: e09e364b0d2c9a745bf11918c0f2c816, type: 3}
+  superHitSound: {fileID: 8300000, guid: 9db471d00bfbf43af9aa3badeb9bf40d, type: 3}
 --- !u!61 &1615895101
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -19062,6 +19238,9 @@ MonoBehaviour:
   KBInfluenceX: 1
   KBInfluenceY: 1
   dizzyDamage: 2
+  swingSound: {fileID: 8300000, guid: 85a9038d4d9c2ad40a1e13910f550bac, type: 3}
+  normalHitSound: {fileID: 8300000, guid: 4401fc56e38ad2e42bab3d72ef33ec76, type: 3}
+  superHitSound: {fileID: 8300000, guid: 2e7099f9e3f82469581b199114fb2822, type: 3}
 --- !u!61 &1623047114
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -19683,6 +19862,9 @@ MonoBehaviour:
   KBInfluenceX: 0
   KBInfluenceY: 0
   dizzyDamage: 1
+  swingSound: {fileID: 8300000, guid: 410f5f370de86264fa72d1b431d47496, type: 3}
+  normalHitSound: {fileID: 8300000, guid: e09e364b0d2c9a745bf11918c0f2c816, type: 3}
+  superHitSound: {fileID: 8300000, guid: 9db471d00bfbf43af9aa3badeb9bf40d, type: 3}
 --- !u!61 &1656613712
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -20043,6 +20225,9 @@ MonoBehaviour:
   KBInfluenceX: 1
   KBInfluenceY: 0
   dizzyDamage: 2
+  swingSound: {fileID: 8300000, guid: 85a9038d4d9c2ad40a1e13910f550bac, type: 3}
+  normalHitSound: {fileID: 8300000, guid: 4401fc56e38ad2e42bab3d72ef33ec76, type: 3}
+  superHitSound: {fileID: 8300000, guid: 2e7099f9e3f82469581b199114fb2822, type: 3}
 --- !u!61 &1710886239
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -20626,6 +20811,9 @@ MonoBehaviour:
   KBInfluenceX: 1
   KBInfluenceY: 1
   dizzyDamage: 2
+  swingSound: {fileID: 8300000, guid: 85a9038d4d9c2ad40a1e13910f550bac, type: 3}
+  normalHitSound: {fileID: 8300000, guid: 4401fc56e38ad2e42bab3d72ef33ec76, type: 3}
+  superHitSound: {fileID: 8300000, guid: 2e7099f9e3f82469581b199114fb2822, type: 3}
 --- !u!61 &1767890105
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -20728,6 +20916,9 @@ MonoBehaviour:
   KBInfluenceX: 1
   KBInfluenceY: 1
   dizzyDamage: 2
+  swingSound: {fileID: 8300000, guid: 85a9038d4d9c2ad40a1e13910f550bac, type: 3}
+  normalHitSound: {fileID: 8300000, guid: 4401fc56e38ad2e42bab3d72ef33ec76, type: 3}
+  superHitSound: {fileID: 8300000, guid: 2e7099f9e3f82469581b199114fb2822, type: 3}
 --- !u!1 &1775554128
 GameObject:
   m_ObjectHideFlags: 0
@@ -21602,6 +21793,9 @@ MonoBehaviour:
   KBInfluenceX: 1
   KBInfluenceY: 1
   dizzyDamage: 1
+  swingSound: {fileID: 8300000, guid: 410f5f370de86264fa72d1b431d47496, type: 3}
+  normalHitSound: {fileID: 8300000, guid: e09e364b0d2c9a745bf11918c0f2c816, type: 3}
+  superHitSound: {fileID: 8300000, guid: 9db471d00bfbf43af9aa3badeb9bf40d, type: 3}
 --- !u!61 &1843897393
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -23271,6 +23465,9 @@ MonoBehaviour:
   KBInfluenceX: 0
   KBInfluenceY: 2
   dizzyDamage: 1
+  swingSound: {fileID: 8300000, guid: 410f5f370de86264fa72d1b431d47496, type: 3}
+  normalHitSound: {fileID: 8300000, guid: e09e364b0d2c9a745bf11918c0f2c816, type: 3}
+  superHitSound: {fileID: 8300000, guid: 9db471d00bfbf43af9aa3badeb9bf40d, type: 3}
 --- !u!61 &2010649680
 BoxCollider2D:
   m_ObjectHideFlags: 0

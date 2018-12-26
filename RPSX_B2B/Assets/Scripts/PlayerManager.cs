@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerManager : MonoBehaviour {
 
@@ -55,6 +56,10 @@ public class PlayerManager : MonoBehaviour {
 
             }
             graceTimers[playerNum]++;
+            if (healthTotals[playerNum] <= 0)
+            {
+                SceneManager.LoadScene(playerNum + 2);
+            }
         }
     }
 

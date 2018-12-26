@@ -49,7 +49,7 @@ public class Player : MonoBehaviour
     float shortHopFrames = 3;
     bool leaping;
     public float leapForce;
-    float leapInfluenceMod = 0.25f;
+    float leapInfluenceMod = 0.05f;
 
     //Animation stuff;
     public bool walking;
@@ -98,6 +98,12 @@ public class Player : MonoBehaviour
     public int maxDizzyHits = 8;
     public Attack burstComponent;
     float undizzyMod = 0.05f;
+
+    //Sound Stuff
+    public AudioSource impactAudio;
+    public AudioSource actionAudio;
+    public AudioSource loopingAudio;
+    SoundManager sounds;
 
     //Other Stuff
     bool passThroughPlatforms;
@@ -186,6 +192,7 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        sounds = GameObject.Find("Manager").GetComponent<SoundManager>();
         footOrigin = transform.GetChild(0);
         frontOrigin = transform.GetChild(1);
         backOrigin = transform.GetChild(2);
@@ -211,6 +218,10 @@ public class Player : MonoBehaviour
                emblem = currentMesh.GetComponent<SpriteMeshAnimation>();
             }
         }
+        impactAudio = gameObject.AddComponent<AudioSource>();
+        actionAudio = gameObject.AddComponent<AudioSource>();
+        loopingAudio = gameObject.AddComponent<AudioSource>();
+        loopingAudio.loop = true;
     }
 
     //Actions the player can do while actionable
@@ -424,6 +435,7 @@ public class Player : MonoBehaviour
             hitbox.myState = currentState;
             hitbox.playersHit.Clear();
             hitbox.owner = this;
+            hitbox.PlayInitSound();
 
             //Sends info to the animator to tell it what attack animation to do.
             anim.SetTrigger(attackInput);
@@ -442,12 +454,14 @@ public class Player : MonoBehaviour
             if (grounded())
             {
                 anim.SetTrigger("Dodge");
+                actionAudio.PlayOneShot(sounds.DodgeSound);
             }
             else 
             {
                 if (AirDodges > 0)
                 {
                     anim.SetTrigger("Dodge");
+                    actionAudio.PlayOneShot(sounds.DodgeSound);
                 }
             }
         }
@@ -493,6 +507,7 @@ public class Player : MonoBehaviour
             rpsEffect.transform.position = transform.position;
             rpsEffect.GetComponent<SpriteRenderer>().color = RPSX.StateColor(rps);
             rpsEffect.GetComponent<RPSEffect>().state = rps;
+            actionAudio.PlayOneShot(sounds.StateChangeSound);
         }
 
         foreach (SpriteMeshInstance mesh in meshes)
@@ -514,13 +529,14 @@ public class Player : MonoBehaviour
         if (timeInState > PlayerManager.maxStateTime)
         {
             ChangeRPSState(RPS_State.Basic);
+            actionAudio.PlayOneShot(sounds.NormalOut);
         }
     }
 
     //Handles dying
     public void KillCharacter(Color color)
     {
-
+        loopingAudio.Stop();
         GameObject burst = Instantiate(Resources.Load("Prefabs/PlayerBurst")) as GameObject;
         burst.transform.position = transform.position;
         ParticleController pc = burst.GetComponent<ParticleController>();
@@ -528,6 +544,7 @@ public class Player : MonoBehaviour
         Camera.main.gameObject.GetComponent<ScreenShaker>().shake(10);
         dead = true;
         PlayerManager.TakeDamage(playerNum - 1);
+        impactAudio.PlayOneShot(sounds.DeathSound);
 
         transform.position = PlayerManager.deadzone;
         ChangeRPSState(RPS_State.Basic);
@@ -589,6 +606,7 @@ public class Player : MonoBehaviour
                 transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
             }
         }
+        impactAudio.PlayOneShot(sounds.ParrySound);
     }
 
     //Called when the players attack is blocked.
@@ -690,6 +708,7 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "Wall" && hitStun > 0)
         {
             rb.velocity = Vector2.Reflect(previousVelocity, collision.contacts[0].normal);
+            impactAudio.PlayOneShot(sounds.WallBounce);
             if (!Staggered)
             {
                 if (!Dizzy())
@@ -783,6 +802,7 @@ public class Player : MonoBehaviour
     {
         IFrames = 0;
         PlayerManager.Undizzy(playerNum);
+        loopingAudio.Stop();
         if (Graced())
         {
             PlayerManager.graceTimers[playerNum - 1] = PlayerManager.maxGraceFrames;
@@ -795,6 +815,7 @@ public class Player : MonoBehaviour
         parrySpark.transform.position = transform.position;
         parrySpark.GetComponent<SpriteRenderer>().color = RPSX.StateColor(currentState);
         anim.SetTrigger("Burst");
+        actionAudio.PlayOneShot(sounds.BurstSound);
     }
 
     //Keeps track of if the player is touching the ground or not

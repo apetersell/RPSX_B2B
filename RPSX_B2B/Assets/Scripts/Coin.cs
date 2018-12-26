@@ -9,6 +9,7 @@ public class Coin : MonoBehaviour {
     public TokenManager manager;
     SpriteRenderer sr;
     Animator anim;
+    SoundManager sm;
     bool taken;
     float takenTimer;
     float timeAfterTaken = 1.5f;
@@ -18,6 +19,7 @@ public class Coin : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
+        sm = GameObject.Find("Manager").GetComponent<SoundManager>();
         anim = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
         if (myState == RPS_State.Rock)
@@ -60,6 +62,8 @@ public class Coin : MonoBehaviour {
                 player.ChangeRPSState(myState);
                 anim.SetTrigger("Get");
                 taken = true;
+                SoundManager.PlaySound(sm.TokenGet);
+
             }
         }
     }
@@ -75,5 +79,7 @@ public class Coin : MonoBehaviour {
         GameObject parrySpark = Instantiate(Resources.Load("Prefabs/ParrySpark")) as GameObject;
         parrySpark.transform.position = transform.position;
         parrySpark.GetComponent<SpriteRenderer>().color = RPSX.StateColor(myState);
+        SoundManager sm = GameObject.Find("Manager").GetComponent<SoundManager>();
+        SoundManager.PlaySound(sm.CoinDink);
     }
 }

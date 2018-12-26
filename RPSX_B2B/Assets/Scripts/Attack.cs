@@ -16,6 +16,9 @@ public class Attack : MonoBehaviour {
     public float KBInfluenceY;
     public static float winKnockbackGrownth = 1.25f;
     public int dizzyDamage;
+    public AudioClip swingSound;
+    public AudioClip normalHitSound;
+    public AudioClip superHitSound;
 
     // Use this for initialization
     void Start () 
@@ -43,41 +46,57 @@ public class Attack : MonoBehaviour {
         }
     }
 
-    public virtual void hitPlayer (Player player)
+    public void PlayInitSound()
     {
-        float effectiveKB = baseKnockback;
-        RPS_Result result = RPSX.determineWinner(myState, player.currentState);
-        float knockbackX = (baseKnockbackAngle.x + (stickInputX * KBInfluenceX)) * directionMod;
-        float knockbackY = baseKnockbackAngle.y + (stickInputY * KBInfluenceY);
-        Vector2 effectiveKBA = new Vector2(knockbackX, knockbackY);
-        switch (result)
+        owner.actionAudio.PlayOneShot(swingSound);
+    }
+
+    public virtual void hitPlayer(Player player)
+    {
+        if (!player.Invincible())
         {
-            case RPS_Result.Tie:
-                effectiveKB = baseKnockback;
-                break;
-            case RPS_Result.Win:
-                effectiveKB = baseKnockback * winKnockbackGrownth;
-                PlayerManager.TakeDizzy(dizzyDamage, player.playerNum);
-                break;
-        }
-        if (result != RPS_Result.Loss)
-        {
-            if (!player.Invincible())
+            float effectiveKB = baseKnockback;
+            RPS_Result result = RPSX.determineWinner(myState, player.currentState);
+            float knockbackX = (baseKnockbackAngle.x + (stickInputX * KBInfluenceX)) * directionMod;
+            float knockbackY = baseKnockbackAngle.y + (stickInputY * KBInfluenceY);
+            Vector2 effectiveKBA = new Vector2(knockbackX, knockbackY);
+            AudioClip clipToPlay = null;
+            switch (result)
+            {
+                case RPS_Result.Tie:
+                    effectiveKB = baseKnockback;
+                    clipToPlay = normalHitSound;
+                    break;
+                case RPS_Result.Win:
+                    effectiveKB = baseKnockback * winKnockbackGrownth;
+                    clipToPlay = superHitSound;
+                    if (PlayerManager.dizzyTotals[player.playerNum - 1] - dizzyDamage <= 0 && !player.Dizzy())
+                    {
+                        SoundManager sm = GameObject.Find("Manager").GetComponent<SoundManager>();
+                        player.impactAudio.PlayOneShot(sm.KOSound);
+                        player.loopingAudio.clip = sm.DizzySound;
+                        player.loopingAudio.Play();
+                    }
+                    PlayerManager.TakeDizzy(dizzyDamage, player.playerNum);
+                    break;
+            }
+            if (result != RPS_Result.Loss)
             {
                 player.TakeHit(effectiveKBA, effectiveKB, result);
+                player.impactAudio.PlayOneShot(clipToPlay);
             }
-        }
-        else 
-        {
-            GameObject parrySpark = Instantiate(Resources.Load("Prefabs/ParrySpark")) as GameObject;
-            parrySpark.transform.position = player.gameObject.transform.position;
-            parrySpark.GetComponent<SpriteRenderer>().color = RPSX.StateColor(player.currentState);
-            if (!player.Dizzy())
+            else
             {
-                player.Parry(effectiveKBA);
-                PlayerManager.RecoverDizzy(dizzyDamage, player.playerNum);
+                GameObject parrySpark = Instantiate(Resources.Load("Prefabs/ParrySpark")) as GameObject;
+                parrySpark.transform.position = player.gameObject.transform.position;
+                parrySpark.GetComponent<SpriteRenderer>().color = RPSX.StateColor(player.currentState);
+                if (!player.Dizzy())
+                {
+                    player.Parry(effectiveKBA);
+                    PlayerManager.RecoverDizzy(dizzyDamage, player.playerNum);
+                }
+                owner.Stagger(effectiveKBA * -1, baseKnockback * 0.5f);
             }
-            owner.Stagger(effectiveKBA * -1, baseKnockback * 0.5f);
         }
     }
 }
